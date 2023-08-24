@@ -38,31 +38,31 @@ import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 const settings = {
     itemsToShow: 1,
-    snapAlign: 'center',
+    snapAlign: 'center' as const,
 };
 
 const breakpoints = {
     // 700px and up
     400: {
         itemsToShow: 1,
-        snapAlign: 'center',
+        snapAlign: "center" as const,
     },
     770: {
         itemsToShow: 2,
-        snapAlign: 'center',
+        snapAlign: "center" as const,
     },
     1000: {
         itemsToShow: 3,
-        snapAlign: 'center',
+        snapAlign: "center" as const,
     },
     // 1024 and up
     1300: {
         itemsToShow: 4,
-        snapAlign: 'start',
+        snapAlign: "start" as const,
     },
     1500: {
         itemsToShow: 5,
-        snapAlign: 'start',
+        snapAlign: "start" as const,
     },
 };
 </script>
