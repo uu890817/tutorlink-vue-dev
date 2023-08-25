@@ -6,7 +6,7 @@
 
         </div>
         <div class="buttonWrap">
-            <button>填寫習題</button>
+            <button @click="doExercise">填寫習題</button>
             <button>查看分數與Q&A</button>
         </div>
         <hr>
@@ -25,6 +25,20 @@
 const props = defineProps({
     eId: String
 })
+
+const doExercise = () => {
+    // 跳轉至填寫頁面
+    // 傳入參數: 課程ID, 作業ID
+    // 路由: /exercise/:courseId/:exerciseId
+
+
+
+
+
+}
+
+
+
 </script>
     
 <style scoped>

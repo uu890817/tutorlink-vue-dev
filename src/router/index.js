@@ -47,7 +47,8 @@ const router = createRouter({
         },
         {
           path: 'exercise',
-          component: () => import('../components/exercises/students/StudentAllExercises.vue')
+          component: () => import('../components/exercises/students/StudentAllExercises.vue'),
+
         }
       ]
     },
@@ -86,6 +87,11 @@ const router = createRouter({
       name: 'Edit',
       component: () => import('../views/editLesson.vue')
     },
+
+    {
+      path: '/exercise/:id?',
+      component: () => import('@/components/exercises/students/StudentScore.vue')
+    }
   ]
 })
 
