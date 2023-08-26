@@ -6,8 +6,17 @@
 
         </div>
         <div class="buttonWrap">
-            <button @click="doExercise">填寫習題</button>
-            <button>查看分數與Q&A</button>
+
+            <n-button strong secondary type="primary">
+                填寫習題
+            </n-button>
+            <a :href="scoreLink">
+                <n-button strong secondary type="info">
+                    查看分數與Q&A
+                </n-button>
+            </a>
+
+
         </div>
         <hr>
         <div>
@@ -15,21 +24,29 @@
         </div>
         <hr>
         <div class="tag">
-            <h4 class="lessonName">#林老師的數學</h4>
-            <h4 class="exerciseType">#作業</h4>
+            <n-tag class="tagItem" type="error" round>
+                林老師的數學
+            </n-tag>
+            <n-tag class="tagItem" type="error" round>
+                作業
+            </n-tag>
         </div>
     </div>
 </template>
     
 <script setup>
+import { computed } from 'vue'
+import { NButton, NTag } from 'naive-ui'
 const props = defineProps({
     eId: String
 })
 
+const scoreLink = computed(() => {
+    return `/exercise/${props.eId}`
+})
+
 const doExercise = () => {
-    // 跳轉至填寫頁面
-    // 傳入參數: 課程ID, 作業ID
-    // 路由: /exercise/:courseId/:exerciseId
+
 
 
 
@@ -55,7 +72,7 @@ const doExercise = () => {
 
 .card:hover {
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: #f6f6f6;
     border: 2px solid #9b9b9b;
     border-radius: 10px;
     display: flex;
@@ -113,7 +130,7 @@ const doExercise = () => {
     padding: 5px;
     border: 0px solid #000000;
     border-radius: 5px;
-    background: #8c8ddf;
+    /* background: #8c8ddf; */
     color: azure;
     font-weight: bold;
     transition: all;
@@ -126,7 +143,7 @@ const doExercise = () => {
     padding: 5px;
     border: 0px solid #000000;
     border-radius: 5px;
-    background: #6b6cb6;
+    /* background: #6b6cb6; */
     color: azure;
     font-weight: bold;
     transition: all;
@@ -134,7 +151,13 @@ const doExercise = () => {
 }
 
 .tag {
+
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tagItem {
+    margin-left: 5px;
 }
 </style>
