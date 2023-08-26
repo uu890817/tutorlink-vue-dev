@@ -42,7 +42,7 @@
 </template>
     
 <script setup>
-import theme from './theme.vue';
+import theme from './Theme.vue';
 import card from "./Card.vue"
 import scorecard from './ScoreCard.vue';
 import { ref } from 'vue'
