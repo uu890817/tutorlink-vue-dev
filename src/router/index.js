@@ -38,7 +38,7 @@ const router = createRouter({
         {
           path: '/beteacher',
           name: 'beteacher',
-          component: () => import('../components/BeATeacher.vue')
+          component: () => import('../components/BeTeacher.vue')
         },
         {
           path: '/mylesson',
@@ -47,9 +47,39 @@ const router = createRouter({
         },
         {
           path: 'exercise',
-          component: () => import('../components/exercises/students/StudentAllExercises.vue'),
-
+          component: () => import('../components/exercises/students/StudentAllExercises.vue')
         }
+      ]
+    },
+    {
+      path: '/teacher',
+      name: 'teacher',
+      component: () => import('../views/UserTeacher.vue'),
+      children: [
+        {
+          path: '/beteacher',
+          name: 'beteacher',
+          component: () => import('../components/BeTeacher.vue')
+        },
+        {
+          path: '/mylesson',
+          name: 'mylesson',
+          component: () => import('../components/seeMyLesson.vue')
+        },
+        {
+          path: 'exercise',
+          component: () => import('../components/exercises/teachers/TeacherAllExercises.vue')
+        }
+      ]
+    },
+    {
+      path: '/information',
+      component: () => import('../views/Personal.vue'),
+      children: [
+        {
+          path: '/information/beteacher',
+          component: () => import('../components/BeTeacher.vue')
+        },
       ]
     },
     {
@@ -57,12 +87,9 @@ const router = createRouter({
       name: 'insertLesson',
       component: () => import('../views/insertLessonPage.vue')
     },
-
     {
       path: '/lesson',
-
       name: 'lesson',
-
       component: () => import('../views/lessonPage.vue')
     },
     {
@@ -87,11 +114,10 @@ const router = createRouter({
       name: 'Edit',
       component: () => import('../views/editLesson.vue')
     },
-
     {
       path: '/exercise/:id?',
       component: () => import('@/components/exercises/students/StudentScore.vue')
-    }
+    },
   ]
 })
 

@@ -38,14 +38,22 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="js">
 import Navbar from '../../Navbar.vue'
 import Choise from '../exercisesComponents/Choice.vue'
 import MultipleChoice from '../exercisesComponents/MultipleChoice.vue'
 import FillIn from '../exercisesComponents/FillIn.vue'
+import { onMounted } from 'vue'
 
 import { NCollapse, NCollapseItem, } from 'naive-ui'
+
+onMounted(() => {
+
+    document.title = "試卷1";
+})
+
 </script>
+
 
 <style scoped>
 .exerciseScoreWrap {
