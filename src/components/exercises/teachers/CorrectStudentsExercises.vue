@@ -1,30 +1,23 @@
 <template>
     <!-- <h1>我的習題</h1> -->
     <div class="exerciseLinkWrap">
-        我的試卷
-        <n-button strong secondary type="warning">
-            新增試卷
-        </n-button>
+        林老師數學教室的已繳交試卷
+
     </div>
 
 
     <div class="exerciseWrap">
         <div class="exerciseCards">
-            <ExercisesCard sId="1"></ExercisesCard>
-            <ExercisesCard></ExercisesCard>
-            <ExercisesCard></ExercisesCard>
-            <ExercisesCard></ExercisesCard>
-            <ExercisesCard></ExercisesCard>
-
-
+            <StudentsExerciseCard></StudentsExerciseCard>
+            <StudentsExerciseCard></StudentsExerciseCard>
+            <StudentsExerciseCard></StudentsExerciseCard>
+            <StudentsExerciseCard></StudentsExerciseCard>
         </div>
     </div>
 </template>
 
 <script setup>
-import ExercisesCard from '@/components/exercises/exercisesComponents/teachers/ExerciseCard.vue';
-import { NButton, NIcon, } from 'naive-ui';
-import { MdCheckmarkCircle, MdCloseCircle, MdSad } from '@vicons/ionicons4'
+import StudentsExerciseCard from '@/components/exercises/exercisesComponents/teachers/StudentsExerciseCard.vue';
 </script>
 
 <style scoped>

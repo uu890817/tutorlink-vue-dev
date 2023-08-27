@@ -68,8 +68,12 @@ const router = createRouter({
         },
         {
           path: 'exercise',
-          component: () => import('../components/exercises/teachers/TeacherAllExercises.vue')
-        }
+          component: () => import('../components/exercises/teachers/TeacherAllExercises.vue'),
+        },
+        {
+          path: 'correct/:id?',
+          component: () => import('../components/exercises/teachers/CorrectStudentsExercises.vue')
+        },
       ]
     },
     {

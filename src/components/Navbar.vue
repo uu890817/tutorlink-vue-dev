@@ -95,7 +95,7 @@ import rightmenu from './Rightmenu.vue';
 
 </script>
 
-<style>
+<style scoped>
 .navbarholder {
     height: 76px;
 }
