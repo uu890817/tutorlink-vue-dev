@@ -74,6 +74,10 @@ const router = createRouter({
           path: 'correct/:id?',
           component: () => import('../components/exercises/teachers/CorrectStudentsExercises.vue')
         },
+        {
+          path: 'qa/:id?',
+          component: () => import('../components/exercises/teachers/QuestionNAnswer.vue')
+        },
       ]
     },
     {

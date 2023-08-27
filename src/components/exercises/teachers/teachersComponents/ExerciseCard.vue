@@ -25,12 +25,14 @@
 
         <hr>
         <n-space justify="space-around">
-            <n-button strong secondary type="primary">
-                <n-icon>
-                    <MdHelpCircle />
-                </n-icon>
-                Q&A
-            </n-button>
+            <a :href="qNa" target="_blank">
+                <n-button strong secondary type="primary">
+                    <n-icon>
+                        <MdHelpCircle />
+                    </n-icon>
+                    Q&A
+                </n-button>
+            </a>
             <a :href="correct" target="_blank">
                 <n-button strong secondary type="primary">
                     <n-icon>
@@ -82,6 +84,10 @@ const props = defineProps({
 const showModal = ref(false)
 const correct = computed(() => {
     return "/teacher/correct/" + props.sId
+})
+
+const qNa = computed(() => {
+    return "/teacher/qa/" + props.sId
 })
 
 const onNegativeClick = () => {

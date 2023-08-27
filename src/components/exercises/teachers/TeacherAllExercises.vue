@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import ExercisesCard from '@/components/exercises/exercisesComponents/teachers/ExerciseCard.vue';
+import ExercisesCard from '@/components/exercises/teachers/teachersComponents/ExerciseCard.vue';
 import { NButton, NIcon, } from 'naive-ui';
 import { MdCheckmarkCircle, MdCloseCircle, MdSad } from '@vicons/ionicons4'
 </script>

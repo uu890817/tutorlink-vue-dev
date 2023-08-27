@@ -1,35 +1,39 @@
 <template>
-    <div>
+    <n-button quaternary round type="success">
+        <n-icon size="15px">
+            <MdCheckmarkCircle />
+        </n-icon>
+        已回應
+    </n-button> |
+    <n-button quaternary round type="warning">
+        <n-icon size="15px">
+            <MdCloseCircle />
+        </n-icon>
+        未回應
+    </n-button>
 
+    <div class="ansWrap">
+        <QuestionBox></QuestionBox>
+        <QuestionBox></QuestionBox>
+        <QuestionBox></QuestionBox>
+        <QuestionBox></QuestionBox>
+        <QuestionBox></QuestionBox>
     </div>
 </template>
 
 <script setup>
-
+import QuestionBox from '@/components/exercises/teachers/teachersComponents/QuestionBox.vue'
+import { MdCheckmarkCircle, MdCloseCircle, MdSad } from '@vicons/ionicons4'
 </script>
 
 <style scoped>
-.exerciseLinkWrap {
-    margin-bottom: 10px;
+/* .ansWrap {
+
+    margin: 10px;
     padding: 10px 0 0 50px;
-}
+} */
 
-.exerciseWrap {
-    display: flex;
-    justify-content: center;
-}
-
-.exerciseLink {
-    font-size: 20px;
-    color: rgb(145, 145, 145);
-
-}
-
-.exerciseLink:hover {
-    color: rgb(80, 72, 72);
-}
-
-.exerciseCards {
+.ansWrap {
     display: flex;
     width: 90%;
     margin: 0 auto;

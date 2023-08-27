@@ -37,7 +37,7 @@ import navbar from "../components/Navbar.vue"
 
 </script>
     
-<style scope>
+<style scoped>
 .myLearn h1 {
     padding-left: 20px;
 }

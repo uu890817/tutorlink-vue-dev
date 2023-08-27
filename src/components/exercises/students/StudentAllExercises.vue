@@ -11,7 +11,7 @@
             </n-button>
         </RouterLink> |
         <RouterLink class="exerciseLink" to="/#">
-            <n-button quaternary round type="success">
+            <n-button quaternary round type="warning">
                 <n-icon size="15px">
                     <MdCloseCircle />
                 </n-icon>
@@ -19,7 +19,7 @@
             </n-button>
         </RouterLink> |
         <RouterLink class="exerciseLink" to="/#">
-            <n-button quaternary round type="success">
+            <n-button quaternary round type="error">
                 <n-icon size="15px">
                     <MdSad />
                 </n-icon>
@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import ExercisesCard from '@/components/exercises/exercisesComponents/ExercisesCard.vue';
+import ExercisesCard from '@/components/exercises/students/studentsComponents/ExercisesCard.vue';
 import { NButton, NIcon, } from 'naive-ui';
 import { MdCheckmarkCircle, MdCloseCircle, MdSad } from '@vicons/ionicons4'
 </script>

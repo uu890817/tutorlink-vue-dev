@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import StudentsExerciseCard from '@/components/exercises/exercisesComponents/teachers/StudentsExerciseCard.vue';
+import StudentsExerciseCard from '@/components/exercises/teachers/teachersComponents/StudentsExerciseCard.vue';
 </script>
 
 <style scoped>

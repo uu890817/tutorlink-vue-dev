@@ -7,13 +7,14 @@
         </div>
         <div class="buttonWrap">
 
-            <n-button strong secondary type="primary">
+            <n-button type="primary">
                 填寫習題
             </n-button>
             <a :href="scoreLink" target="_blank">
-                <n-button strong secondary type="info">
+                <n-button type="info">
                     查看分數與Q&A
                 </n-button>
+
             </a>
 
 
