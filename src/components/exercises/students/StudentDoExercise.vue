@@ -1,5 +1,6 @@
 <template>
     <Navbar></Navbar>
+
     <n-progress type="line" :show-indicator="false" :status="status" :percentage="timeBar" />
     <!-- <h1>我的習題</h1> -->
     <div class="exerciseScoreWrap">
@@ -34,6 +35,7 @@ import { NCollapse, NCollapseItem, NLoadingBarProvider } from 'naive-ui'
 import { ref, onMounted, watch, computed } from "vue";
 import { useMessage, useDialog } from "naive-ui";
 
+const containerRef = ref(void 0);
 const active = ref(false);
 const message = useMessage();
 const dialog = useDialog();
@@ -89,6 +91,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.n-progress {
+    position: fixed
+}
+
+.exerciseScore {
+    position: fixed
+}
+
 .exerciseScoreWrap {
     margin: 5px 10px 10px 10px;
     padding: 10px;
