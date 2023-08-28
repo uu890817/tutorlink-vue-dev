@@ -36,7 +36,7 @@ import { MdCheckmarkCircle, MdCloseCircle, MdSad } from '@vicons/ionicons4'
 .ansWrap {
     display: flex;
     width: 90%;
-    margin: 0 auto;
+    margin: 10px auto;
     justify-content: flex-start;
     flex-direction: row;
     flex-wrap: wrap;

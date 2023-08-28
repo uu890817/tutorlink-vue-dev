@@ -1,7 +1,7 @@
 <template>
     <div class="teacher">
         <div class="title">
-            <img src="../assets/icon/bell.png">
+            <img src="../../assets/icon/bell.png">
             <h3>申請成為老師</h3>
         </div>
         <p>
@@ -10,7 +10,9 @@
         <p>
             立即申請，一同開創優質教育之路！
         </p>
-        <button class="btnStyle" @click="">＞＞＞　　申請教師　　＜＜＜ </button>
+        <a href="/personal/apply">
+            <button class="btnStyle" @click="">＞＞＞　　申請教師　　＜＜＜ </button>
+        </a>
 
     </div>
 </template>

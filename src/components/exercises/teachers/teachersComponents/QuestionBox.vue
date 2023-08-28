@@ -19,8 +19,5 @@
 </script>
 
 <style scoped>
-.ansWrap {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+.ansWrap {}
 </style>
