@@ -1,40 +1,24 @@
 <template>
     <Navbar></Navbar>
+    <n-progress type="line" :show-indicator="false" :status="status" :percentage="timeBar" />
     <!-- <h1>我的習題</h1> -->
     <div class="exerciseScoreWrap">
         <h2 class="exerciseName">試卷1{{ $route.params.id }}</h2>
-        <h3 class="exerciseScore">得分:0 滿分:100</h3>
+        <h3 class="exerciseScore">
+            <n-countdown :duration="30000" :active="active" @finish="noTime" />
+        </h3>
 
         <div class="exercisesWrap">
             <Choise count="1"></Choise>
             <MultipleChoice count="2"></MultipleChoice>
             <FillIn count="3"></FillIn>
         </div>
-    </div>
-    <hr>
-    <h2>問與答</h2>
-    <div class="queWrap">
-        <textarea rows="4" cols="50" placeholder="在這裡輸入問題...."></textarea>
-        <button>送出</button>
-    </div>
+        <n-space justify="center">
+            <n-button strong secondary round type="primary">
+                交卷
+            </n-button>
+        </n-space>
 
-
-    <div class="ansWrap">
-        <n-collapse>
-            <p>來自 王一 於 2023/01/01 00:00 :</p>
-            <p>為什麼1+1等於2</p>
-            <n-collapse-item title="點我看更多回應" name="1">
-                <div>
-                    <p>來自 老師 於 2023/01/01 00:00 :</p>
-                    <p>為什麼你會有這個問題</p>
-                </div>
-                <hr>
-                <div>
-                    <p>來自 李二 於 2023/01/01 00:00 :</p>
-                    <p>看戲</p>
-                </div>
-            </n-collapse-item>
-        </n-collapse>
     </div>
 </template>
 
@@ -44,17 +28,65 @@ import Navbar from '@/components/public/Navbar.vue'
 import Choise from '@/components/exercises/students/studentsComponents/Choice.vue'
 import MultipleChoice from '@/components/exercises/students/studentsComponents/MultipleChoice.vue'
 import FillIn from '@/components/exercises/students/studentsComponents/FillIn.vue'
-import { onMounted } from 'vue'
 
-import { NCollapse, NCollapseItem, } from 'naive-ui'
+import { NCollapse, NCollapseItem, NLoadingBarProvider } from 'naive-ui'
+
+import { ref, onMounted, watch, computed } from "vue";
+import { useMessage, useDialog } from "naive-ui";
+
+const active = ref(false);
+const message = useMessage();
+const dialog = useDialog();
+
+
+const noTime = () => {
+    // console.log("時間到");
+    // document.body.style.backgroundColor = "#ffaaaa";
+
+    dialog.warning({
+        title: "時間到了",
+        content: "請交卷",
+        positiveText: "交卷",
+        closable: false,
+        maskClosable: false,
+        onPositiveClick: () => {
+            message.success("已交卷");
+        },
+    });
+}
+let timer = null
+const orginalTime = 30 - 1
+let time = orginalTime
+let status = "success"
+// const timeComputed = 0
+const timeBar = ref(100)
+
+
+const countdown = () => {
+    console.log(timeBar)
+    time--;
+    timeBar.value = 100 * (time / orginalTime)
+    if (timeBar.value < 30) {
+        status = "warning"
+    }
+    if (timeBar.value < 10) {
+        status = "error"
+    }
+    if (time == 0) {
+        clearInterval(timer)
+    }
+}
+
 
 onMounted(() => {
-
+    active.value = true;
     document.title = "試卷1";
+    timer = setInterval(countdown, 1000)
 })
 
-</script>
 
+
+</script>
 
 <style scoped>
 .exerciseScoreWrap {

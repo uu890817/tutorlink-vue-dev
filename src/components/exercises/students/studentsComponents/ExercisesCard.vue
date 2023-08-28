@@ -6,10 +6,11 @@
 
         </div>
         <div class="buttonWrap">
-
-            <n-button type="primary">
-                填寫習題
-            </n-button>
+            <a :href="doExercise" target="_blank">
+                <n-button type="primary">
+                    填寫習題
+                </n-button>
+            </a>
             <a :href="scoreLink" target="_blank">
                 <n-button type="info">
                     查看分數與Q&A
@@ -46,15 +47,10 @@ const scoreLink = computed(() => {
     return `/exerciseScore/${props.eId}`
 })
 
+const doExercise = computed(() => {
+    return `/doExercise/${props.eId}`
+})
 
-const doExercise = () => {
-
-
-
-
-
-
-}
 
 
 
