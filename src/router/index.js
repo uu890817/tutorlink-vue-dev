@@ -26,7 +26,7 @@ const router = createRouter({
     {
       path: "/refund",
       name: "refund",
-      component: () => import("../views/Refund.vue"),
+      component: () => import("../views/refund.vue"),
     },
     {
       path: "/purchase",
@@ -112,6 +112,10 @@ const router = createRouter({
           component: () => import("../components/personal/ApplyTeacher.vue"),
         },
       ],
+    },
+    {
+      path: '/google',
+      component: () => import("../components/login/google.vue"),
     },
     {
       path: "/lesson/insertLesson",

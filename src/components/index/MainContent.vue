@@ -42,9 +42,10 @@
 </template>
     
 <script setup>
-import theme from './Theme.vue';
+import theme from './theme.vue';
 import card from "./Card.vue"
 import scorecard from '../score/ScoreCard.vue';
+
 import { ref } from 'vue'
 const ratings = ref(5);
 
