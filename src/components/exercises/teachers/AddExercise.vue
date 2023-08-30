@@ -3,7 +3,18 @@
     <n-space justify="center">
         <n-space class="addWrap" vertical>
             <n-input maxlength="30" show-count clearable placeholder="請在此輸入試卷名稱" />
-            <AddExerciseCard @dataUpdate="card1"></AddExerciseCard>
+
+            <n-card title="" hoverable justify="center">
+                <n-space justify="center">
+                    <n-popselect v-model:value="value" :options="options" trigger="click">
+                        <n-button type="warning" dashed>{{ value || 'Popselect' }}</n-button>
+                    </n-popselect>
+                </n-space>
+            </n-card>
+
+            <AddChoiceExerciseCard questionId="1" @dataUpdate="getData" @getUp="up" @getDown="down" @newBlock="newBlock">
+            </AddChoiceExerciseCard>
+            <AddFillInExerciseCard questionId="2" @dataUpdate="card1"></AddFillInExerciseCard>
             <!-- <AddExerciseCard></AddExerciseCard> -->
 
 
@@ -20,36 +31,40 @@
 </template>
 <script setup lang="js">
 import Navbar from '@/components/public/Navbar.vue'
-import AddExerciseCard from '@/components/exercises/teachers/teachersComponents/AddExerciseCard.vue'
-import { reactive, toRaw } from 'vue';
+import AddChoiceExerciseCard from '@/components/exercises/teachers/teachersComponents/AddChoiceExerciseCard.vue'
+import AddFillInExerciseCard from '@/components/exercises/teachers/teachersComponents/AddFillInExerciseCard.vue'
+import { ref, toRaw } from 'vue';
 
-const cards = reactive([
+const exerciseData = ref([
+
+]);
+const value = ref("Drive My Car")
+const options = [
     {
-        id: 1,
-        title: "1+1=?",
-        type: 1,
-        item: ["1", "2", "3", "4"],
+        label: "選擇題",
+        value: "choice"
     },
     {
-        id: 2,
-        title: "選出雙數",
-        type: 1,
-        item: ["5", "10", "15", "20"],
-    }
-
-])
-
-const card1 = (data) => {
+        label: "填充題",
+        value: "fillIn"
+    },]
+const getData = (data) => {
     // console.log(toRaw(data))
-    console.log((JSON.parse(JSON.stringify(data)))[0])
+    console.log((JSON.parse(JSON.stringify(data))))
 
 }
 
 
 
-
-
-
+const up = () => {
+    console.info('u')
+}
+const down = () => {
+    console.info('d')
+}
+const newBlock = () => {
+    console.info('b')
+}
 
 
 
