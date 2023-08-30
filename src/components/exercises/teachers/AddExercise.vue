@@ -6,20 +6,25 @@
 
             <n-card title="" hoverable justify="center" v-if="exerciseData.length == 0">
                 <n-space justify="center">
-                    <n-popselect v-model:value="value" :options="options" trigger="click">
-                        <n-button type="warning" dashed>{{ value || 'Popselect' }}</n-button>
-                    </n-popselect>
+                    <n-popconfirm :show-icon="false" negative-text="選擇題" positive-text="填充題" @positive-click="addFillIn"
+                        @negative-click="addChoice">
+                        <template #trigger>
+                            <n-button type="warning" dashed>
+                                新增題目</n-button>
+                        </template>
+                    </n-popconfirm>
                 </n-space>
-            </n-card>
 
-            <div v-for="item in exerciseData ">
-                <div v-if="show">
+            </n-card>
+            <div v-if="show">
+                <div v-for="item in exerciseData ">
+                    <p :id="item.key"> </p>
                     <AddChoiceExerciseCard v-if="item.type == 'choice'" :questionId="item.id" :questionData="item.content"
                         @dataUpdate="getData" @getUp="up" @getDown="down" @newBlock="newBlock" @delBlock="delBlock"
-                        :key="item.id">
+                        :key="item.key">
                     </AddChoiceExerciseCard>
-                    <AddFillInExerciseCard v-if="item.type == 'fillIn'" :questionId="item.id" @dataUpdate="getData"
-                        @getUp="up" @getDown="down" @newBlock="newBlock" @delBlock="delBlock">
+                    <AddFillInExerciseCard v-if="item.type == 'fillIn'" :questionId="item.id" :questionData="item.content"
+                        @getUp="up" @getDown="down" @newBlock="newBlock" @delBlock="delBlock" :key="item.key">
                     </AddFillInExerciseCard>
                 </div>
             </div>
@@ -32,7 +37,7 @@
             <!-- <AddExerciseCard></AddExerciseCard> -->
 
 
-            <!-- <pre>{{ JSON.stringify(exerciseData, null, 2) }}</pre> -->
+            <pre>{{ JSON.stringify(exerciseData, null, 2) }}</pre>
             <n-space justify="center">
                 <n-button strong secondary type="success">
                     儲存試卷
@@ -48,8 +53,9 @@ import Navbar from '@/components/public/Navbar.vue'
 import AddChoiceExerciseCard from '@/components/exercises/teachers/teachersComponents/AddChoiceExerciseCard.vue'
 import AddFillInExerciseCard from '@/components/exercises/teachers/teachersComponents/AddFillInExerciseCard.vue'
 import { ref, toRaw, watch } from 'vue';
+import { useNotification } from 'naive-ui'
 
-
+const notification = useNotification()
 const value = ref("Drive My Car")
 const options = [
     {
@@ -64,40 +70,42 @@ const options = [
 
 
 let childDataSaver = [
-    {
-        id: 1,
-        type: 'choice',
-        content: {
-            questionTitle: "",
-            choice: [{
+    // {
+    //     id: 1,
+    //     key: 1,
+    //     type: 'choice',
+    //     content: {
+    //         questionTitle: "",
+    //         choice: [{
 
-                isAnswer: false,
-                string: ""
-            },
-            {
-                isAnswer: false,
-                string: ""
-            },
-            {
-                isAnswer: false,
-                string: ""
-            },
-            {
-                isAnswer: false,
-                string: ""
-            }],
-            mutipleChoice: false
-        },
-    },
-    {
-        id: 2,
-        type: 'fillIn',
-        questions: {
-            question: "",
-            answer: ""
-        },
+    //             isAnswer: false,
+    //             string: ""
+    //         },
+    //         {
+    //             isAnswer: false,
+    //             string: ""
+    //         },
+    //         {
+    //             isAnswer: false,
+    //             string: ""
+    //         },
+    //         {
+    //             isAnswer: false,
+    //             string: ""
+    //         }],
+    //         mutipleChoice: false
+    //     },
+    // },
+    // {
+    //     id: 2,
+    //     key: 2,
+    //     type: 'fillIn',
+    //     content: {
+    //         questionTitle: "",
+    //         answer: ""
+    //     },
 
-    },
+    // },
 
 ]
 const show = ref(true)
@@ -114,6 +122,7 @@ const getData = (data, id) => {
 const newChoise = (id) => {
     return {
         id: id,
+        key: id,
         type: 'choice',
         content: {
             questionTitle: "",
@@ -141,71 +150,106 @@ const newChoise = (id) => {
 const newFillIn = (id) => {
     return {
         id: id,
+        key: id,
         type: 'fillIn',
-        questions: {
-            question: "",
+        content: {
+            questionTitle: "",
             answer: ""
         },
     }
 }
 
 const up = (id) => {
-    console.log(JSON.parse(JSON.stringify(exerciseData.value)))
+    // console.log(JSON.parse(JSON.stringify(exerciseData.value)))
+    const newData = JSON.parse(JSON.stringify(childDataSaver))
     if (id <= 1) {
+        notification['warning']({
+            content: "已到達最上方",
+            meta: "無法再移動了",
+            duration: 2500,
+            keepAliveOnHover: true
+        })
         return
     }
-    const newData = JSON.parse(JSON.stringify(childDataSaver))
+    show.value = false
     childDataSaver[id - 1] = newData[id - 2]
     childDataSaver[id - 2] = newData[id - 1]
     childDataSaver[id - 1].id = id
     childDataSaver[id - 2].id = id - 1
+    // exerciseData.value = childDataSaver
+    console.log(JSON.parse(JSON.stringify(exerciseData.value)))
+
+    show.value = true
+    // window.location.reload("/#" + id)
+}
+const down = (id) => {
+    // console.log(JSON.parse(JSON.stringify(exerciseData.value)))
+    const newData = JSON.parse(JSON.stringify(childDataSaver))
+    console.log(newData.length)
+    if (id > newData.length - 1) {
+        notification['warning']({
+            content: "已到達最下方",
+            meta: "無法再移動了",
+            duration: 2500,
+            keepAliveOnHover: true
+        })
+        return
+    }
+    show.value = false
+    childDataSaver[id - 1] = newData[id]
+    childDataSaver[id] = newData[id - 1]
+    childDataSaver[id - 1].id = id
+    childDataSaver[id].id = id + 1
+    // exerciseData.value = childDataSaver
+    console.log(JSON.parse(JSON.stringify(exerciseData.value)))
+
+    show.value = true
+}
+const addChoice = () => {
+    childDataSaver.push(newChoise(childDataSaver.length + 1))
+    exerciseData.value = childDataSaver
+    show.value = false
+    show.value = true
+}
+const addFillIn = () => {
+    childDataSaver.push(newFillIn(childDataSaver.length + 1))
+    exerciseData.value = childDataSaver
+    show.value = false
+    show.value = true
+}
+const newBlock = (type, id) => {
+    console.info(type, " ", id)
+    let newData = (JSON.parse(JSON.stringify(childDataSaver)))
+    const temp = {}
+    let inputItem = {}
+
+    if (type == 'choice') {
+        inputItem = newChoise(childDataSaver.length + 1)
+    }
+    if (type == 'fillIn') {
+        inputItem = newFillIn(childDataSaver.length + 1)
+    }
+    newData.splice(id, 0, inputItem)
+    for (let i = 0; i < newData.length; i++) {
+        newData[i].id = i + 1
+    }
+
+
+    childDataSaver = newData
     exerciseData.value = childDataSaver
     console.log(JSON.parse(JSON.stringify(exerciseData.value)))
     show.value = false
     show.value = true
 }
-const down = () => {
-    console.info('d')
-}
-const newBlock = (type) => {
-    if (type == 'choice') {
-        childDataSaver.push(newChoise(childDataSaver.length + 1))
-        exerciseData.value = childDataSaver
-    }
-    if (type == 'fillIn') {
-        childDataSaver.push(newFillIn(childDataSaver.length + 1))
-        exerciseData.value = childDataSaver
-    }
-    show.value = false
-    show.value = true
-
-    console.info(childDataSaver)
-}
 const delBlock = () => {
     console.info('d')
 }
 
-watch(value, (data) => {
-    if (data === 'choice') {
-        exerciseData.value.push({
-            type: 'choice',
-            id: 1,
-            questions: {}
-        })
-    }
-    if (data === 'fillIn') {
-        exerciseData.value.push({
-            type: 'fillIn',
-            id: 1,
-            questions: {}
-        })
-    }
-})
 
 
 </script>
 <style scoped>
 .addWrap {
-    margin-top: 10px;
+    margin-top: 50px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <n-card :title="titleString" hoverable>
         <n-space vertical>
-            <n-input v-model:value="questionData.question" type="textarea" maxlength="50" show-count
+            <n-input v-model:value="questionData.questionTitle" type="textarea" maxlength="50" show-count
                 placeholder="請在此輸入題目" />
             <n-input v-model:value="questionData.answer" type="textarea" maxlength="100" show-count
                 placeholder="請在此輸入參考解答" />
@@ -11,9 +11,13 @@
             <n-button strong secondary round type="warning" @click="up">
                 上移
             </n-button>
-            <n-button strong secondary round type="warning" @click="newBlock">
-                新增題目
-            </n-button>
+            <n-popconfirm :show-icon="false" negative-text="選擇題" positive-text="填充題" @positive-click="addFillIn"
+                @negative-click="addChoice">
+                <template #trigger>
+                    <n-button strong secondary round type="warning">
+                        新增題目</n-button>
+                </template>
+            </n-popconfirm>
             <n-button strong secondary round type="warning" @click="delBlock">
                 刪除
             </n-button>
@@ -30,34 +34,28 @@
 import { ref, watch, toRaw, computed, defineEmits } from "vue";
 
 const props = defineProps({
-    questionId: String
+    questionId: Number,
+    questionData: Object,
 })
 const titleString = props.questionId + "."
 const emits = defineEmits(['dataUpdate', 'getUp', 'getDown', 'newBlock', 'delBlock'])
 
-const questionData = ref({
-    // id: parseInt(props.questionId),
-    question: "",
-    answer: ""
-})
+const questionData = ref(props.questionData)
 
-const onCreate = () => {
-    return {
-        isAnswer: false,
-        string: ""
-    };
-}
 const up = () => {
     emits('getUp', props.questionId)
 }
 const down = () => {
-    emits('getDown')
-}
-const newBlock = () => {
-    emits('newBlock')
+    emits('getDown', props.questionId)
 }
 const delBlock = () => {
     emits('delBlock')
+}
+const addChoice = () => {
+    emits('newBlock', 'choice', props.questionId)
+}
+const addFillIn = () => {
+    emits('newBlock', 'fillIn', props.questionId)
 }
 watch(questionData, (newVal) => {
     // console.log(newVal)

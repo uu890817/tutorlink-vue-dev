@@ -55,21 +55,11 @@
 import { ref, watch, toRaw, computed, defineEmits } from "vue";
 
 const props = defineProps({
-    questionId: String,
+    questionId: Number,
     questionData: Object,
 })
 const titleString = props.questionId + "."
 const emits = defineEmits(['dataUpdate', 'getUp', 'getDown', 'newBlock', 'delBlock'])
-const questionType = ref("null")
-const questionTypeOptions = [
-    {
-        label: "選擇題",
-        value: "choice"
-    },
-    {
-        label: "填充題",
-        value: "fillIn"
-    },]
 
 const questionData = ref(props.questionData)
 
@@ -83,18 +73,18 @@ const up = () => {
     emits('getUp', props.questionId)
 }
 const down = () => {
-    emits('getDown')
+    emits('getDown', props.questionId)
 }
 const delBlock = () => {
     emits('delBlock')
 }
 const addChoice = () => {
     console.log(1)
-    emits('newBlock', 'choice')
+    emits('newBlock', 'choice', props.questionId)
 }
 const addFillIn = () => {
     console.log(2)
-    emits('newBlock', 'fillIn')
+    emits('newBlock', 'fillIn', props.questionId)
 }
 watch(questionData, (newVal) => {
     // console.log(newVal)
