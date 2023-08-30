@@ -1,7 +1,7 @@
 <template>
     <n-card :title="titleString" hoverable>
         <n-space vertical>
-            <n-input v-model:value="questionData.question" type="textarea" maxlength="50" show-count
+            <n-input v-model:value="questionData.questionTitle" type="textarea" maxlength="50" show-count
                 placeholder="請在此輸入題目" />
             <n-dynamic-input v-model:value="questionData.choice" :on-create="onCreate" :min="4" :max="6">
                 <template #create-button-default>
@@ -26,8 +26,20 @@
             <n-button strong secondary round type="warning" @click="up">
                 上移
             </n-button>
-            <n-button strong secondary round type="warning" @click="newBlock">
-                新增題目
+            <n-popconfirm :show-icon="false" negative-text="選擇題" positive-text="填充題" @positive-click="addFillIn"
+                @negative-click="addChoice">
+                <template #trigger>
+                    <n-button strong secondary round type="warning">
+                        新增題目</n-button>
+                </template>
+            </n-popconfirm>
+            <!-- <n-popselect v-model:value="questionType" :options="questionTypeOptions" trigger="click">
+                <n-button strong secondary round type="warning" @click="newBlock">
+                    新增題目
+                </n-button>
+            </n-popselect> -->
+            <n-button strong secondary round type="warning" @click="delBlock">
+                刪除
             </n-button>
             <n-button strong secondary round type="warning" @click="down">
                 下移
@@ -35,6 +47,7 @@
         </n-space>
 
     </n-card>
+    <!-- {{ props.questionData }} -->
     <!-- <pre>{{ JSON.stringify(questionData, null, 2) }}</pre> -->
 </template>
 
@@ -42,33 +55,23 @@
 import { ref, watch, toRaw, computed, defineEmits } from "vue";
 
 const props = defineProps({
-    questionId: String
+    questionId: String,
+    questionData: Object,
 })
 const titleString = props.questionId + "."
-const emits = defineEmits(['dataUpdate', 'getUp', 'getDown', 'newBlock'])
+const emits = defineEmits(['dataUpdate', 'getUp', 'getDown', 'newBlock', 'delBlock'])
+const questionType = ref("null")
+const questionTypeOptions = [
+    {
+        label: "選擇題",
+        value: "choice"
+    },
+    {
+        label: "填充題",
+        value: "fillIn"
+    },]
 
-const questionData = ref({
-    id: parseInt(props.questionId),
-    question: "",
-    choice: [
-        {
-            isAnswer: false,
-            string: ""
-        },
-        {
-            isAnswer: false,
-            string: ""
-        },
-        {
-            isAnswer: false,
-            string: ""
-        },
-        {
-            isAnswer: false,
-            string: ""
-        }],
-    mutipleChoice: false
-})
+const questionData = ref(props.questionData)
 
 const onCreate = () => {
     return {
@@ -77,18 +80,30 @@ const onCreate = () => {
     };
 }
 const up = () => {
-    emits('getUp')
+    emits('getUp', props.questionId)
 }
 const down = () => {
     emits('getDown')
 }
-const newBlock = () => {
-    emits('newBlock')
+const delBlock = () => {
+    emits('delBlock')
+}
+const addChoice = () => {
+    console.log(1)
+    emits('newBlock', 'choice')
+}
+const addFillIn = () => {
+    console.log(2)
+    emits('newBlock', 'fillIn')
 }
 watch(questionData, (newVal) => {
     // console.log(newVal)
-    emits('dataUpdate', questionData.value)
+    emits('dataUpdate', questionData.value, props.questionId)
 }, { deep: true })
+watch(props, () => {
+
+}, { deep: true })
+
 </script>
 
 <style scoped>

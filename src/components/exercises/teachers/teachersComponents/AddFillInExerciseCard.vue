@@ -14,6 +14,9 @@
             <n-button strong secondary round type="warning" @click="newBlock">
                 新增題目
             </n-button>
+            <n-button strong secondary round type="warning" @click="delBlock">
+                刪除
+            </n-button>
             <n-button strong secondary round type="warning" @click="down">
                 下移
             </n-button>
@@ -30,10 +33,10 @@ const props = defineProps({
     questionId: String
 })
 const titleString = props.questionId + "."
-const emits = defineEmits(['dataUpdate', 'getUp', 'getDown', 'newBlock'])
+const emits = defineEmits(['dataUpdate', 'getUp', 'getDown', 'newBlock', 'delBlock'])
 
 const questionData = ref({
-    id: parseInt(props.questionId),
+    // id: parseInt(props.questionId),
     question: "",
     answer: ""
 })
@@ -45,13 +48,16 @@ const onCreate = () => {
     };
 }
 const up = () => {
-    emits('getUp')
+    emits('getUp', props.questionId)
 }
 const down = () => {
     emits('getDown')
 }
 const newBlock = () => {
     emits('newBlock')
+}
+const delBlock = () => {
+    emits('delBlock')
 }
 watch(questionData, (newVal) => {
     // console.log(newVal)
