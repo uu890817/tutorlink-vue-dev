@@ -44,11 +44,11 @@ const props = defineProps({
 })
 
 const scoreLink = computed(() => {
-    return `/member/exerciseScore/${props.eId}`
+    return `/exerciseScore/${props.eId}`
 })
 
 const doExercise = computed(() => {
-    return `/member/doExercise/${props.eId}`
+    return `/doExercise/${props.eId}`
 })
 
 
