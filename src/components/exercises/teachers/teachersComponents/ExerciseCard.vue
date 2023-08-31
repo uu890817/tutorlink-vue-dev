@@ -81,11 +81,11 @@ const props = defineProps({
 
 
 const correct = computed(() => {
-    return "/teacher/correct/" + props.sId
+    return "/member/teacher/correct/" + props.sId
 })
 
 const qNa = computed(() => {
-    return "/teacher/qa/" + props.sId
+    return "/member/teacher/qa/" + props.sId
 })
 
 const message = useMessage()
