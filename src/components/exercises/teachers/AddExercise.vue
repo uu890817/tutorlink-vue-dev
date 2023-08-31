@@ -37,7 +37,7 @@
             <!-- <AddExerciseCard></AddExerciseCard> -->
 
 
-            <pre>{{ JSON.stringify(exerciseData, null, 2) }}</pre>
+            <!-- <pre>{{ JSON.stringify(exerciseData, null, 2) }}</pre> -->
             <n-space justify="center">
                 <n-button strong secondary type="success">
                     儲存試卷
@@ -52,60 +52,16 @@
 import Navbar from '@/components/public/Navbar.vue'
 import AddChoiceExerciseCard from '@/components/exercises/teachers/teachersComponents/AddChoiceExerciseCard.vue'
 import AddFillInExerciseCard from '@/components/exercises/teachers/teachersComponents/AddFillInExerciseCard.vue'
-import { ref, toRaw, watch } from 'vue';
-import { useNotification } from 'naive-ui'
-
+import { ref, h } from 'vue';
+import { useNotification, useDialog, useMessage, NIcon } from 'naive-ui'
+import { MdHand } from '@vicons/ionicons4'
+const dialog = useDialog()
 const notification = useNotification()
 const value = ref("Drive My Car")
-const options = [
-    {
-        label: "選擇題",
-        value: "choice"
-    },
-    {
-        label: "填充題",
-        value: "fillIn"
-    },]
-
 
 
 let childDataSaver = [
-    // {
-    //     id: 1,
-    //     key: 1,
-    //     type: 'choice',
-    //     content: {
-    //         questionTitle: "",
-    //         choice: [{
 
-    //             isAnswer: false,
-    //             string: ""
-    //         },
-    //         {
-    //             isAnswer: false,
-    //             string: ""
-    //         },
-    //         {
-    //             isAnswer: false,
-    //             string: ""
-    //         },
-    //         {
-    //             isAnswer: false,
-    //             string: ""
-    //         }],
-    //         mutipleChoice: false
-    //     },
-    // },
-    // {
-    //     id: 2,
-    //     key: 2,
-    //     type: 'fillIn',
-    //     content: {
-    //         questionTitle: "",
-    //         answer: ""
-    //     },
-
-    // },
 
 ]
 const show = ref(true)
@@ -241,8 +197,41 @@ const newBlock = (type, id) => {
     show.value = false
     show.value = true
 }
-const delBlock = () => {
-    console.info('d')
+const delBlock = (id) => {
+    dialog.error({
+        title: `確定要刪除 第${id}題 嗎?`,
+        content: "請再次確定，刪除後無法復原",
+        negativeText: '取消',
+        positiveText: "刪除",
+        maskClosable: false,
+        icon: () => h(NIcon, null, [h(MdHand)]),
+        onPositiveClick: () => {
+            notification['success']({
+                content: "刪除成功",
+                meta: "拉進垃圾車",
+                duration: 2500,
+                keepAliveOnHover: true
+            });
+
+            childDataSaver.splice(id - 1, 1)
+            for (let i = 0; i < childDataSaver.length; i++) {
+                childDataSaver[i].id = i + 1
+            }
+
+            exerciseData.value = childDataSaver
+            show.value = false
+            show.value = true
+        },
+        onNegativeClick: () => {
+            notification['error']({
+                content: "刪除失敗",
+                meta: "太可惜了",
+                duration: 2500,
+                keepAliveOnHover: true
+            });
+        }
+    });
+
 }
 
 

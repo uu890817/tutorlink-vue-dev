@@ -76,7 +76,7 @@ const down = () => {
     emits('getDown', props.questionId)
 }
 const delBlock = () => {
-    emits('delBlock')
+    emits('delBlock', props.questionId)
 }
 const addChoice = () => {
     console.log(1)
