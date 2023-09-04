@@ -1,5 +1,5 @@
 <script setup>
-import seeLesson from '@/components/lessons/SeeMyLesson.vue'
+import seeLesson from '@/components/lessons/Seemylesson.vue'
 import Navbar from '@/components/public/Navbar.vue';
 </script>
 

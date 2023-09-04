@@ -1,10 +1,10 @@
 <template>
-    <n-card title="試卷1" hoverable>
+    <n-card :title="props.data.exerName" hoverable>
 
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
-                    林老師的數學教室
+                    {{ props.data.lesson.lessonName }}
                 </n-tag>
                 <n-tag type="error" round>
                     作業
@@ -20,9 +20,6 @@
             </n-space>
 
         </n-space>
-
-
-
         <hr>
         <n-space justify="space-around">
             <a :href="qNa" target="_blank">
@@ -66,6 +63,7 @@
                 刪除試卷
             </n-button>
         </n-space>
+        <!-- {{ props.data }} -->
     </n-card>
     <n-modal v-model:show="showModal" class="custom-card" preset="card" :style="bodyStyle" title="分享試卷" size="huge"
         :bordered="false" :segmented="segmented">
@@ -93,7 +91,8 @@ import { useDialog, useNotification, NIcon } from 'naive-ui'
 import shareExerciseCard from '@/components/exercises/teachers/teachersComponents/shareExerciseCard.vue'
 
 const props = defineProps({
-    sId: Number
+    sId: Number,
+    data: Object
 })
 
 
@@ -124,14 +123,14 @@ const onDelete = () => {
                 keepAliveOnHover: true
             });
         },
-        onNegativeClick: () => {
-            notification['error']({
-                content: "刪除失敗",
-                meta: "太可惜了",
-                duration: 2500,
-                keepAliveOnHover: true
-            });
-        }
+        // onNegativeClick: () => {
+        //     notification['error']({
+        //         content: "刪除失敗",
+        //         meta: "太可惜了",
+        //         duration: 2500,
+        //         keepAliveOnHover: true
+        //     });
+        // }
     });
 }
 
