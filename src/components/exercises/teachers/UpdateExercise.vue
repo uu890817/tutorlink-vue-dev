@@ -254,16 +254,52 @@ const dataFormat = (resData) => {
     for (let i = 0; i < resData.length; i++) {
         if (resData[i].type === 1) {
             childDataSaver.push(newChoise(i + 1))
+            let optionsData = []
+            for (let j = 0; j < resData[i].options.length; j++) {
+                let data = {
+                    isAnswer: false,
+                    string: ""
+                }
+                if (resData[i].options[j].answer === 'true') {
+                    data.isAnswer = true
+                }
+                data.string = resData[i].options[j].content
+                console.log(data)
+                optionsData.push(data)
+            }
+            console.log(optionsData)
+            childDataSaver[i].content.choice = optionsData
             childDataSaver[i].content.questionTitle = resData[i].content
         }
         if (resData[i].type === 2) {
             childDataSaver.push(newChoise(i + 1))
+            let optionsData = []
+            for (let j = 0; j < resData[i].options.length; j++) {
+                let data = {
+                    isAnswer: false,
+                    string: ""
+                }
+                if (resData[i].options[j].answer === 'true') {
+                    data.isAnswer = true
+                }
+                data.string = resData[i].options[j].content
+                console.log(data)
+                optionsData.push(data)
+            }
+            console.log(optionsData)
+            childDataSaver[i].content.choice = optionsData
             childDataSaver[i].content.questionTitle = resData[i].content
             childDataSaver[i].content.mutipleChoice = true
         }
         if (resData[i].type === 3) {
             childDataSaver.push(newFillIn(i + 1))
-            childDataSaver[i].content.questionTitle = resData[i].content
+            let optionsData = {
+                questionTitle: "",
+                answer: ""
+            }
+            optionsData.answer = resData[i].options[0].answer
+            optionsData.questionTitle = resData[i].content
+            childDataSaver[i].content = optionsData
         }
 
     }

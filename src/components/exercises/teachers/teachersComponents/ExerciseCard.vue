@@ -1,6 +1,6 @@
 <template>
     <n-card :title="props.data.exerName" hoverable>
-
+        {{ props.data }}
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
@@ -44,12 +44,14 @@
                 </n-icon>
                 分享試卷
             </n-button>
-            <n-button strong secondary type="info">
-                <n-icon>
-                    <MdSettings />
-                </n-icon>
-                更新習題
-            </n-button>
+            <a :href="updateExercise">
+                <n-button strong secondary type="info">
+                    <n-icon>
+                        <MdSettings />
+                    </n-icon>
+                    更新習題
+                </n-button>
+            </a>
             <!-- <n-button strong secondary type="info">
                 <n-icon>
                     <MdClipboard />
@@ -102,6 +104,10 @@ const correct = computed(() => {
 
 const qNa = computed(() => {
     return "/member/teacher/qa/" + props.sId
+})
+
+const updateExercise = computed(() => {
+    return "/member/updateExercise/" + props.sId
 })
 
 const dialog = useDialog()
