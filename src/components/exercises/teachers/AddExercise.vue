@@ -38,6 +38,42 @@
 
 
             <!-- <pre>{{ JSON.stringify(exerciseData, null, 2) }}</pre> -->
+
+            <n-collapse>
+                <n-collapse-item title="試卷詳細設定" name="1">
+                    <n-card title="" hoverable>
+                        <n-space vertical>
+                            習題類型:<n-select v-model:value="exerciseType" :options="exerciseTypeOptions"
+                                placeholder="請選擇習題類型" />
+                        </n-space>
+                        <n-space vertical>
+                            習題有效時間:
+                            <n-date-picker v-model:value="range2" update-value-on-close type="datetimerange"
+                                start-placeholder="開始日期及時間" end-placeholder="結束日期及時間" :actions="['clear']" />
+                        </n-space>
+                        <n-space vertical>
+                            倒數計時:
+                            <n-space>
+                                <n-switch v-model:value="timePickerDisable" :checked-value="false"
+                                    :unchecked-value="true" />
+                                <n-time-picker v-model:value="timePicker" size="small" :actions="!timePickerDisable"
+                                    :disabled="timePickerDisable" />
+                                {{ realTimePicker }} 秒
+                            </n-space>
+
+                        </n-space>
+                        <n-space vertical>
+                            完成顯示答案:
+                            <n-space>
+                                否
+                                <n-switch v-model:value="showAnswer" :checked-value="false" :unchecked-value="true" />
+                                是
+                            </n-space>
+                        </n-space>
+
+                    </n-card>
+                </n-collapse-item>
+            </n-collapse>
             <n-space justify="center">
                 <n-button strong secondary type="success">
                     儲存試卷
@@ -52,12 +88,35 @@
 import Navbar from '@/components/public/Navbar.vue'
 import AddChoiceExerciseCard from '@/components/exercises/teachers/teachersComponents/AddChoiceExerciseCard.vue'
 import AddFillInExerciseCard from '@/components/exercises/teachers/teachersComponents/AddFillInExerciseCard.vue'
-import { ref, h } from 'vue';
+import { ref, h, computed } from 'vue';
 import { useNotification, useDialog, useMessage, NIcon } from 'naive-ui'
 import { MdHand } from '@vicons/ionicons4'
 const dialog = useDialog()
 const notification = useNotification()
-const value = ref("Drive My Car")
+const exerciseType = ref(null)
+const exerciseTypeOptions = [
+    {
+        label: "作業",
+        value: "1",
+    },
+    {
+        label: "考試",
+        value: "2"
+    },
+    {
+        label: "影片課程練習題",
+        value: "3"
+    }
+]
+const timePickerDisable = ref(true)
+const showAnswer = ref(true)
+const timePicker = ref(-28800000)
+const realTimePicker = computed(() => {
+    return (timePicker.value + 28800000) / 1000
+})
+
+const range2 = ref(null)
+
 
 
 let childDataSaver = [

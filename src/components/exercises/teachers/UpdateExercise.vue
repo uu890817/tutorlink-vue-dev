@@ -1,7 +1,7 @@
 <template >
     <Navbar></Navbar>
-    {{ topics }}
-    {{ exerciseTitle }}
+    <!-- {{ topics }}
+    {{ exerciseTitle }} -->
     <n-space justify="center">
         <n-space class="addWrap" vertical>
             <n-input maxlength="30" v-model:value="exerciseTitle" show-count clearable placeholder="請在此輸入試卷名稱" />
@@ -264,10 +264,10 @@ const dataFormat = (resData) => {
                     data.isAnswer = true
                 }
                 data.string = resData[i].options[j].content
-                console.log(data)
+                // console.log(data)
                 optionsData.push(data)
             }
-            console.log(optionsData)
+            // console.log(optionsData)
             childDataSaver[i].content.choice = optionsData
             childDataSaver[i].content.questionTitle = resData[i].content
         }
@@ -283,10 +283,10 @@ const dataFormat = (resData) => {
                     data.isAnswer = true
                 }
                 data.string = resData[i].options[j].content
-                console.log(data)
+                // console.log(data)
                 optionsData.push(data)
             }
-            console.log(optionsData)
+            // console.log(optionsData)
             childDataSaver[i].content.choice = optionsData
             childDataSaver[i].content.questionTitle = resData[i].content
             childDataSaver[i].content.mutipleChoice = true
