@@ -4,7 +4,7 @@
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
-                    {{ props.data.lesson.lessonName }}
+                    {{ props.data.lessonName }}
                 </n-tag>
                 <n-tag type="error" round>
                     作業

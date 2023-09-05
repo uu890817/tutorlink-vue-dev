@@ -294,6 +294,38 @@ const delBlock = (id) => {
 }
 
 
+const insertData = {
+    "exerId": 1,
+    "lesson": {
+        "lessonId": 1,
+        "subject": {
+            "subjectId": 1,
+            "subjectContent": "國文"
+        },
+        "lessonName": "我的測試課程",
+        "lessonType": true,
+        "price": null,
+        "image": "123",
+        "lessondetail": null,
+        "order": [],
+        "shoppingCart": [],
+        "report": [],
+        "favorite": [],
+        "calender": [],
+        "studentWillLearn": [],
+        "courseQA": []
+    },
+    "exerName": "我的考卷1",
+    "createDate": "2023-08-31T16:00:00.000+00:00",
+    "exercisePermissions": null,
+    "question": []
+}
+
+
+
+
+
+
 
 </script>
 <style scoped>
