@@ -69,6 +69,9 @@
                                 <n-switch v-model:value="showAnswer" :checked-value="false" :unchecked-value="true" />
                                 是
                             </n-space>
+                            <n-space vertical>
+                                課程綁定:<n-select v-model:value="lesson" :options="lessonOptions" placeholder="請選擇習題類型" />
+                            </n-space>
                         </n-space>
 
                     </n-card>
@@ -94,6 +97,8 @@ import { MdHand } from '@vicons/ionicons4'
 const dialog = useDialog()
 const notification = useNotification()
 const exerciseType = ref(null)
+const lesson = ref("")
+const lessonOptions = []
 const exerciseTypeOptions = [
     {
         label: "作業",
@@ -132,6 +137,9 @@ const getData = (data, id) => {
     console.log(JSON.parse(JSON.stringify(data)))
     console.log(childDataSaver[id - 1])
     childDataSaver[id - 1].content = JSON.parse(JSON.stringify(data))
+}
+const getlessons = () => {
+
 }
 
 const newChoise = (id) => {

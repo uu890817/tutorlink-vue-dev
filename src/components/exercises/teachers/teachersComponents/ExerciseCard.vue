@@ -1,6 +1,6 @@
 <template>
     <n-card :title="props.data.exerName" hoverable>
-        {{ props.data }}
+        <!-- {{ props.data }} -->
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
