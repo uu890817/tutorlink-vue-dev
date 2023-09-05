@@ -56,8 +56,8 @@
                             <n-space>
                                 <n-switch v-model:value="timePickerDisable" :checked-value="false"
                                     :unchecked-value="true" />
-                                <n-time-picker v-model:value="timePicker" size="small" :actions="!timePickerDisable"
-                                    :disabled="timePickerDisable" />
+                                <n-time-picker v-model:value="timePicker" size="small" :disabled="timePickerDisable"
+                                    :actions="null" />
                                 {{ realTimePicker }} 秒
                             </n-space>
 
