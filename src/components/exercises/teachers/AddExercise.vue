@@ -440,7 +440,7 @@ const save = () => {
             sortId: 0,
             options: []
         }
-
+        topicData.sortId = i + 1
         if (exerciseData.value[i].type === "choice") {
             topicData.sortId = exerciseData.value[i].id
             topicData.content = exerciseData.value[i].content.questionTitle
@@ -452,7 +452,7 @@ const save = () => {
                     answer: ""
                 }
                 optionData.content = exerciseData.value[i].content.choice[j].string
-                optionData.sortId = i + 1
+                optionData.sortId = j + 1
                 if (exerciseData.value[i].content.choice[j].isAnswer) {
                     optionData.answer = "true"
                     answerCount++
