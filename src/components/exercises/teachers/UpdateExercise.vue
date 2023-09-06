@@ -41,6 +41,46 @@
 
 
             <!-- <pre>{{ JSON.stringify(exerciseData, null, 2) }}</pre> -->
+
+            <n-collapse>
+                <n-collapse-item title="試卷詳細設定" name="1">
+                    <n-card title="" hoverable>
+                        <n-space vertical>
+                            習題類型:<n-select v-model:value="exerciseType" :options="exerciseTypeOptions"
+                                placeholder="請選擇習題類型" />
+                        </n-space>
+                        <n-space vertical>
+                            習題有效時間:
+                            <n-date-picker v-model:value="dateTime" update-value-on-close type="datetimerange"
+                                start-placeholder="開始日期及時間" end-placeholder="結束日期及時間" :actions="['clear']" />
+                        </n-space>
+                        <n-space vertical>
+                            倒數計時:
+                            <n-space>
+                                <n-switch v-model:value="timePickerDisable" :checked-value="false"
+                                    :unchecked-value="true" />
+                                <n-time-picker v-model:value="timePicker" size="small" :disabled="timePickerDisable"
+                                    :actions="null" />
+                                {{ realTimePicker }} 秒
+                            </n-space>
+
+                        </n-space>
+                        <n-space vertical>
+                            完成顯示答案:
+                            <n-space>
+                                否
+                                <n-switch v-model:value="showAnswer" :checked-value="false" :unchecked-value="true" />
+                                是
+                            </n-space>
+                            <n-space vertical>
+                                課程綁定:<n-select v-model:value="lesson" :options="lessonOptions" placeholder="請選擇習題類型" />
+                            </n-space>
+                        </n-space>
+                    </n-card>
+                </n-collapse-item>
+            </n-collapse>
+
+
             <n-space justify="center">
                 <n-button strong secondary type="success">
                     儲存試卷
@@ -313,7 +353,7 @@ const dataFormat = (resData) => {
 
 
 const getExercise = async () => {
-    const res = await tutorlinkTest.get(`teacher/myTopics/${routeData.value}`)
+    const res = await tutorlinkTest.get(`teacher/myExercise/${routeData.value}`)
     dataState.value = true
     dataFormat(res.data)
     topics.value = res.data

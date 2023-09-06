@@ -34,7 +34,7 @@ const teacherId = 1
 const exercises = ref([])
 const dataState = ref(false)
 const getExercise = async () => {
-    const res = await tutorlinkTest.get(`teacher/myExercise?teacherId=${teacherId}`)
+    const res = await tutorlinkTest.get(`teacher/myAllExercise?teacherId=${teacherId}`)
     console.log(res)
     dataState.value = true
     exercises.value = res.data
