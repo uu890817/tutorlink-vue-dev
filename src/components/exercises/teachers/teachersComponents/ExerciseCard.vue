@@ -45,7 +45,7 @@
                 分享試卷
             </n-button>
             <a :href="updateExercise">
-                <n-button strong secondary type="info">
+                <n-button strong secondary type="info" target="_blank">
                     <n-icon>
                         <MdSettings />
                     </n-icon>

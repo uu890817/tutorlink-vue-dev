@@ -26,7 +26,8 @@
                         :key="item.key">
                     </AddChoiceExerciseCard>
                     <AddFillInExerciseCard v-if="item.type == 'fillIn'" :questionId="item.id" :questionData="item.content"
-                        @getUp="up" @getDown="down" @newBlock="newBlock" @delBlock="delBlock" :key="item.key">
+                        @dataUpdate="getData" @getUp="up" @getDown="down" @newBlock="newBlock" @delBlock="delBlock"
+                        :key="item.key">
                     </AddFillInExerciseCard>
                 </div>
             </div>
@@ -88,6 +89,7 @@ const getData = (data, id) => {
     console.log(JSON.parse(JSON.stringify(data)))
     console.log(childDataSaver[id - 1])
     childDataSaver[id - 1].content = JSON.parse(JSON.stringify(data))
+    console.log(childDataSaver)
 }
 
 const newChoise = (id) => {
