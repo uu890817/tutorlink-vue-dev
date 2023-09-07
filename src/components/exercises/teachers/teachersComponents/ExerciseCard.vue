@@ -4,10 +4,10 @@
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
-                    {{ props.data.lessonName }}
+                    {{ lessonName }}
                 </n-tag>
                 <n-tag type="error" round>
-                    作業
+                    {{ exerciseType }}
                 </n-tag>
             </n-space>
             <n-space class="NProgress" vertical>
@@ -89,14 +89,37 @@ import { MdHelpCircle, MdPersonAdd, MdClipboard, MdCheckmarkCircleOutline, MdSet
 
 import { ref, computed, h } from 'vue'
 import { useDialog, useNotification, NIcon } from 'naive-ui'
-
+import tutorlink from '@/api/tutorlink.js'
 import shareExerciseCard from '@/components/exercises/teachers/teachersComponents/ShareExerciseCard.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
     sId: Number,
     data: Object
 })
+const lessonName = computed(() => {
+    if (props.data.lessonName === null) {
+        return "未綁定任何課程"
+    }
+    return props.data.lessonName
+})
 
+const exerciseType = computed(() => {
+    if (props.data.exerType === null) {
+        return "錯誤習題型態"
+    }
+    if (props.data.exerType === 1) {
+        return '作業'
+    }
+    if (props.data.exerType === 2) {
+        return '考試'
+    }
+    if (props.data.exerType === 3) {
+        return '影片練習題'
+    }
+})
 
 const correct = computed(() => {
     return "/member/teacher/correct/" + props.sId
@@ -122,6 +145,8 @@ const onDelete = () => {
         maskClosable: false,
         icon: () => h(NIcon, null, [h(MdHand)]),
         onPositiveClick: () => {
+
+            deleteExercise()
             notification['success']({
                 content: "刪除成功",
                 meta: "拉進垃圾車",
@@ -149,7 +174,21 @@ const segmented = {
 }
 const showModal = ref(false)
 
+const deleteExercise = async () => {
+    console.log(props.sId)
+    let result = await tutorlink.delete(`/teacher/deleteExercise/${props.sId}`)
+    if (result.status == 200) {
+        router.go(0)
+    } else {
+        notification['error']({
+            content: "出現錯誤",
+            meta: `code: ${result.status}`,
+            duration: 2500,
+            keepAliveOnHover: true
+        });
+    }
 
+}
 
 
 </script>

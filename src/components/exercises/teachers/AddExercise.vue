@@ -130,7 +130,7 @@ const realTimePicker = computed(() => {
 
 const dateTime = ref(null)
 
-
+document.title = "新增習題"
 
 let childDataSaver = []
 const show = ref(true)
@@ -324,7 +324,7 @@ const save = () => {
         exerName: "",
         createDate: 0,
         lesson: {
-            lessonId: 0
+            lessonId: null
         },
         topics: [],
         exerciseConfig: {
@@ -360,7 +360,12 @@ const save = () => {
             keepAliveOnHover: true
         });
     } else {
-        insertData.lesson.lessonId = lesson.value
+        if (lesson.value == -1) {
+            delete insertData.lesson
+            // insertData.lesson.lessonId = null
+        } else {
+            insertData.lesson.lessonId = lesson.value
+        }
     }
 
     if (exerciseType.value === null) {
@@ -496,7 +501,7 @@ const save = () => {
         insertData.topics.push(topicData)
     }
 
-
+    console.log(insertData)
 
     if (errorFlag) {
         notification['warning']({
@@ -523,7 +528,7 @@ const sendExercise = async (insertData) => {
             duration: 10000,
             keepAliveOnHover: true
         })
-        setTimeout(() => { router.replace("/member/teacher/exercise") }, 2000)
+        router.replace("/member/teacher/exercise")
     }
     if (result.data === "Error") {
         notification['success']({
