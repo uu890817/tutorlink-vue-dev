@@ -1,5 +1,4 @@
 <template>
-    {{ props.count12 }}
     <div class="calenderStyle">
         <div class="calenderTitle">
             <div class="d-flex justify-content-center">
@@ -100,8 +99,8 @@
                                 <div class="text-right" v-for="item in unavailableTime">
                                     <div v-if="item.millisecond === getSelectedTimeMillisecond(time, date)">
                                         <h6>該時段無法選擇</h6>
-                                        <div>{{ time < 10 ? '0' + time : time }}:00~{{ time + 1 < 10 ? '0' + (time + 1)
-                                            : time + 1 }}:00 </div>
+                                        <div>{{ time < 10 ? '0' + time : time }}:00~{{ time + 1 < 10 ? '0' + (time + 1) :
+                                            time + 1 }}:00 </div>
                                         </div>
                                     </div>
                             </n-popover>
@@ -109,7 +108,7 @@
                         <!-- 未選取的時間只顯示時間本身 -->
                         <template v-else>
                             <div
-                                :class="['calenderTime', { 'selectedTime': isTimeSelected(time, date), 'currentHour': isCurrentHour(time, date)}]">
+                                :class="['calenderTime', { 'selectedTime': isTimeSelected(time, date), 'currentHour': isCurrentHour(time, date) }]">
                                 {{ time < 10 ? '0' + time : time }}:00 </div>
                         </template>
                     </div>
@@ -119,28 +118,23 @@
     </div>
 </template>
 <script setup>
-import { ref, computed, defineEmits, defineProps, watch } from 'vue';
+import { ref, defineEmits, defineProps, watch, computed } from 'vue';
+import { storeToRefs } from 'pinia'
+import { useShoppingCartStore } from '@/stores/useShoppingCartStore'; // 確保引入購物車的 Pinia Store
+const cartStore = useShoppingCartStore();
+const { shoppingCartItem,totalPrice } = storeToRefs(cartStore);
+const shoppingCartStore = useShoppingCartStore(); // 使用購物車 Store
+
+// 通過商品標題查找對應的購物車項目
+// const item = shoppingCartStore.shoppingCartItem.find(item => item.title === props.title); 
 
 // 目前的時間
 const currentTime = new Date();
 // 起始日期和結束日期的狀態
 const startDate = ref(new Date());
 const endDate = ref(new Date());
-
-const props = defineProps({
-    count12: Number, // 接收數量
-})
-
-// const count = computed(() => props.count);
-
-const emit = defineEmits(['selectTime']);
-
 // 預選的課程時間
 const selectedTimes = ref([]);
-
-watch(selectedTimes, () => {
-    emit('selectTime', selectedTimes)
-}, {deep:true})
 
 
 const unavailableTime = ref([
@@ -166,8 +160,7 @@ const handleTimeClick = (time, date) => {
     const currentTime = new Date();
 
     // 如果選取的時間早於當前時間，則禁止選取
-    if (isTimeUnavailable(time, date) || selectedDate < currentTime||selectedTimes.value.length>=count.value) {
-        console.log(props.count)
+    if (isTimeUnavailable(time, date) || selectedDate < currentTime || selectedTimes.value.length > count.value) {
         return;
     }
 
@@ -188,7 +181,6 @@ const handleTimeClick = (time, date) => {
     // 如果找不到該時間，則將其添加到已選取的時間列表中
     if (index === -1) {
         selectedTimes.value.push({ millisecond, str });
-        console.log(selectedTimes.value);
     } else {
         // 如果找到了該時間，則從已選取的時間列表中移除它
         selectedTimes.value.splice(index, 1);

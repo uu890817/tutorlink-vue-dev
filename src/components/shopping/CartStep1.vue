@@ -31,21 +31,11 @@
 <script setup>
 import ShoppingCartItem from "@/components/shopping/ShoppingCartItem.vue"
 import Navbar from "@/components/public/Navbar.vue"
-import { ref, computed } from "vue";
-const shoppingCartItem = ref([
-  { title: "課程名稱1", type: 0, price: 1200, img: "https://fakeimg.pl/250x150/", link: "/product/1001112702764163" },
-  { title: "課程名稱2", type: 1, price: 300, img: "https://fakeimg.pl/250x150/", link: "/product/1001112702764163" },
-  { title: "課程名稱3", type: 1, price: 400, img: "https://fakeimg.pl/250x150/", link: "/product/1001112702764163" },
-])
+import { storeToRefs } from 'pinia'
+import { useShoppingCartStore } from '@/stores/useShoppingCartStore';
+const cartStore = useShoppingCartStore();
+const { shoppingCartItem,totalPrice } = storeToRefs(cartStore);
 
-// 計算總金額
-const totalPrice = computed(() => {
-    return shoppingCartItem.value.reduce((total, item) => {
-        // 檢查 count 是否為有效值，如果不是的話就視為 0
-        const count = isNaN(item.count) ? 1 : item.count;
-        return total + item.price * count;
-    }, 0);
-});
 </script>
     
 

@@ -23,7 +23,7 @@ import "bootstrap/dist/js/bootstrap.js"
 <style>
 /* 滾動條隱藏 */
 html {
-  overflow: -moz-hidden-unscrollable;
+  scrollbar-width: none;
   height: 100%;
 }
 
@@ -36,6 +36,7 @@ body {
   height: 100%;
   width: calc(100vw + 18px);
   overflow: auto;
+  background-color: #e7ecef;
 }
 
 /* reset CSS */
@@ -43,18 +44,6 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* color: #9d8189; */
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-p,
-label,
-span,
-li {
   /* color: #9d8189; */
 }
 

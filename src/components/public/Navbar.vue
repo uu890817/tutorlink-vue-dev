@@ -1,5 +1,5 @@
 <template>
-    <div class="navbarholder"></div>
+    <!-- <div class="navbarholder"></div> -->
     <header>
         <nav class="navbar navbar-expand-lg" id="navbar">
             <div class="container">
@@ -9,6 +9,11 @@
                     aria-controls="navbarNavAltMarkup" aria-expanded="true" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="collapse navbar-collapse justify-content-start" id="navbarNavAltMarkup">
+                    <a class="nav-link linkStyle " href="#" type="button">線上課程</a>
+                    <a class="nav-link linkStyle " href="#" type="button">影片課程</a>
+
+                </div>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
                     <!-- 切換登入狀態 -->
                     <div class="navbar-nav">
@@ -18,9 +23,18 @@
                             v-else>未登入</button>
                     </div>
                     <div class="navbar-nav" v-if="loginStatus">
-                        <router-link to="/member/shoppingcart/step1" class="nav-link linkStyle">購物車</router-link>
+                        <a class="nav-link linkStyle" href="#" type="button"><n-icon size="25">
+                                <search-outline />
+                            </n-icon></a>
+                        <router-link to="/member/shoppingcart/step1" class="nav-link linkStyle">
+                            <n-icon size="25"><cart-outline /></n-icon>
+                            <n-badge :value="cartValue" :max="15" class="tag"></n-badge>
+                        </router-link>
                         <a class="nav-link linkStyle" href="#" type="button" data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">使用者</a>
+                            data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"><n-icon
+                                size="25">
+                                <person-outline />
+                            </n-icon></a>
                     </div>
                     <div class="navbar-nav" v-else>
                         <a class="nav-link linkStyle" href="#" type="button" data-bs-toggle="modal"
@@ -53,7 +67,16 @@ import rightmenu from './Rightmenu.vue';
 import login from "./Login.vue"
 import register from "./Register.vue"
 import { ref, onMounted } from "vue"
+import { CartOutline, PersonOutline, SearchOutline } from '@vicons/ionicons5'
+import { useShoppingCartStore } from '../../stores/useShoppingCartStore.js'
+import { storeToRefs } from 'pinia'
 
+const cartStore = useShoppingCartStore()
+const { shoppingCartItem } = storeToRefs(cartStore)
+
+
+// 購物車數量
+const cartValue = ref(shoppingCartItem.value.length)
 const loginStatus = ref(false);
 const loginStatusChanege = () => {
     loginStatus.value = !(loginStatus.value)
@@ -90,7 +113,7 @@ const getAllCookies = () => {
         cookieObj[cookieName] = cookieValue;
     }
     // console.log("我是:");
-    // console.log(cookieObj.UsersId);
+    console.log(cookieObj.UsersId);
     if (cookieObj.UsersId != null) {
         loginStatus.value = true
     }
@@ -105,12 +128,15 @@ getAllCookies()
 }
 
 header {
-    position: fixed;
+    /* position: fixed; */
+    margin-bottom: 10px;
+    margin-top: 10px;
+
     width: 100%;
     top: 0;
     left: 0;
     z-index: 999;
-    box-shadow: 0 1px 5px #9d8189;
+    /* box-shadow: 0 1px 5px #9d8189; */
 
 }
 
@@ -127,7 +153,7 @@ header {
 }
 
 #navbar {
-    background-color: #ffe5d9;
+    /* background-color: #ffe5d9; */
     /* background-color: #d4a37316; */
     padding-left: 20px;
     padding-right: 20px;
@@ -135,10 +161,11 @@ header {
 }
 
 .linkStyle {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 400;
     color: #9d8189;
-    margin-left: 20px;
+    margin-left: 35px;
+    min-width: 60px;
 }
 
 .navbarTitleStyle:focus {
@@ -152,6 +179,22 @@ header {
 
 }
 
+.tag {
+    position: relative;
+    right: 10px;
+    bottom: 10px;
+}
+
+.userBtn {
+    width: 100px;
+    padding: 5px 10px;
+    background: #fff;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+    border-radius: 20px;
+    border: 1.5px solid #000;
+}
 
 /* #navbar.scrolled {
     background-color: #ffe5d9;
