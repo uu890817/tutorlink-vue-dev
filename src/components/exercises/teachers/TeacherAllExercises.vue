@@ -14,20 +14,23 @@
     <div class="exerciseWrap">
         <div v-if="exercises.length > 0">
             <div class="exerciseCards" v-for="exercise in exercises">
-                <ExercisesCard :sId="exercise.exerId" :data="exercise"></ExercisesCard>
+                <ExercisesCard :sId="exercise.exerId" :lessonId="exercise.lessonId" :data="exercise"
+                    @deleteExercise="getExercise"></ExercisesCard>
             </div>
 
         </div>
         <div v-else-if="dataState" class="noData">
             <n-card hoverable>
                 <n-result status="info" title="沒有試卷資料" description="你可以按一下『黃色按鈕』新增試卷" />
-                <a href="/member/addExercise" target="_blank">
-                    <n-space justify="center">
+
+                <n-space justify="center">
+                    <a href="/member/addExercise" target="_blank">
                         <n-button strong secondary type="warning">
                             +新增試卷
                         </n-button>
-                    </n-space>
-                </a>
+                    </a>
+                </n-space>
+
             </n-card>
         </div>
 

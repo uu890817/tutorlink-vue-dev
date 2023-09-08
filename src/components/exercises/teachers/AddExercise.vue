@@ -545,6 +545,13 @@ const sendExercise = async (insertData) => {
 
 </script>
 <style scoped>
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 .addWrap {
     margin-top: 50px;
 }

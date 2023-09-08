@@ -1,6 +1,6 @@
 <template>
     <n-card :title="props.data.exerName" hoverable>
-        <!-- {{ props.data }} -->
+        {{ props.data }}
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
@@ -38,7 +38,7 @@
                     批改試卷
                 </n-button>
             </a>
-            <n-button strong secondary type="info" @click="showModal = true">
+            <n-button strong secondary type="info" @click="shareExercise">
                 <n-icon>
                     <MdPersonAdd />
                 </n-icon>
@@ -68,7 +68,7 @@
         <!-- {{ props.data }} -->
     </n-card>
     <n-modal v-model:show="showModal" class="custom-card" preset="card" :style="bodyStyle" title="分享試卷" size="huge"
-        :bordered="false" :segmented="segmented">
+        :bordered="false" :segmented="segmented" :mask-closable="false">
         <template #header-extra>
             <n-input-group>
                 <n-input placeholder="請輸入ID或名字搜索" />
@@ -77,7 +77,11 @@
                 </n-button> -->
             </n-input-group>
         </template>
-        <shareExerciseCard></shareExerciseCard>
+        <div v-for="student in students" :key="student.usersId">
+
+            <shareExerciseCard :stdData="student"></shareExerciseCard>
+
+        </div>
         <template #footer>
 
         </template>
@@ -87,16 +91,18 @@
 <script setup lang="js">
 import { MdHelpCircle, MdPersonAdd, MdClipboard, MdCheckmarkCircleOutline, MdSettings, MdTrash, MdHand } from '@vicons/ionicons4'
 
-import { ref, computed, h } from 'vue'
+import { ref, computed, h, defineEmits } from 'vue'
 import { useDialog, useNotification, NIcon } from 'naive-ui'
 import tutorlink from '@/api/tutorlink.js'
 import shareExerciseCard from '@/components/exercises/teachers/teachersComponents/ShareExerciseCard.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
+const emits = defineEmits(['deleteExercise'])
+const students = ref([])
 const props = defineProps({
     sId: Number,
+    lessonId: Number,
     data: Object
 })
 const lessonName = computed(() => {
@@ -174,11 +180,19 @@ const segmented = {
 }
 const showModal = ref(false)
 
+const shareExercise = () => {
+    getStudents()
+    showModal.value = true
+}
+
+
+
+
 const deleteExercise = async () => {
     console.log(props.sId)
     let result = await tutorlink.delete(`/teacher/deleteExercise/${props.sId}`)
     if (result.status == 200) {
-        router.go(0)
+        emits('deleteExercise')
     } else {
         notification['error']({
             content: "出現錯誤",
@@ -189,6 +203,12 @@ const deleteExercise = async () => {
     }
 
 }
+
+const getStudents = async () => {
+    let resData = await tutorlink.get(`/teacher/getStudents/${props.lessonId}`)
+    students.value = resData.data
+}
+
 
 
 </script>
