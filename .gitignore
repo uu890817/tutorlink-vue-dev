@@ -26,3 +26,17 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+
+# access
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.mpg
+*.mpeg
+*.webm
+*.wmv
+
+# Windows thumbnail cache files
+*.thumb

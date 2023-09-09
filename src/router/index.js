@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import tutorlink from '@/api/tutorlink.js';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -184,7 +185,7 @@ const router = createRouter({
           component: () => import("@/views/CheckEditLesson.vue"),
         },
         {
-          path: "lesson/Edit",
+          path: "lesson/Edit/:lessonId",
           name: "Edit",
           component: () => import("@/views/EditLesson.vue"),
         },
@@ -296,6 +297,19 @@ router.beforeEach((to) => {
   if (to.meta.needLogin) {
     console.info("來自路由守衛: 本頁面需登入");
     //登入辨別位置
+    const API_URL = `/routerVerify`
+    const routerVerify = async () => {
+      let resData = await tutorlink.post(API_URL)
+      if (resData.data === "loginAgain") {
+        router.replace({ name: "Home" })
+      }
+
+
+      console.log(resData.data)
+      //   if(resData.data )
+      // }
+    }
+    routerVerify()
     return;
   }
   console.info("來自路由守衛: 本頁面不需登入");

@@ -22,10 +22,10 @@ import "bootstrap/dist/js/bootstrap.js"
 
 <style>
 /* 滾動條隱藏 */
-html {
-  scrollbar-width: none;
+/* html {
+  overflow: -moz-hidden-unscrollable;
   height: 100%;
-}
+} */
 
 body::-webkit-scrollbar {
   display: none;
