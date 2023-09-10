@@ -1,6 +1,6 @@
 <template>
     <n-card :title="props.data.exerName" hoverable>
-        {{ props.data }}
+        <!-- {{ props.data }} -->
         <n-space justify="space-around">
             <n-space class="NProgress" vertical>
                 <n-tag type="error" round>
@@ -10,14 +10,14 @@
                     {{ exerciseType }}
                 </n-tag>
             </n-space>
-            <n-space class="NProgress" vertical>
+            <!-- <n-space class="NProgress" vertical>
                 <n-progress type="dashboard" gap-position="bottom" :percentage="70" unit="分" color="#66CCFF" />
                 平均分數
             </n-space>
             <n-space class="NProgress" vertical>
                 <n-progress type="dashboard" gap-position="bottom" :percentage="70" unit="%" color="#B7cc22" />
                 填寫人數百分比
-            </n-space>
+            </n-space> -->
 
         </n-space>
         <hr>
@@ -79,7 +79,7 @@
         </template>
         <div v-for="student in students" :key="student.usersId">
 
-            <shareExerciseCard :stdData="student"></shareExerciseCard>
+            <shareExerciseCard :stdData="student" :exerId="props.sId" @updateStudent="updateStudent"></shareExerciseCard>
 
         </div>
         <template #footer>
@@ -204,9 +204,21 @@ const deleteExercise = async () => {
 
 }
 
+const updateStudent = () => {
+    console.info(123456789)
+    showModal.value = false
+    getStudents()
+    showModal.value = true
+}
 const getStudents = async () => {
-    let resData = await tutorlink.get(`/teacher/getStudents/${props.lessonId}`)
+    let lessonId = -1
+    if (props.lessonId !== null) {
+        lessonId = props.lessonId
+    }
+    let resData = await tutorlink.get(`/teacher/getStudents/${lessonId}/${props.sId}`)
+    showModal.value = false
     students.value = resData.data
+    showModal.value = true
 }
 
 
@@ -216,6 +228,9 @@ const getStudents = async () => {
 <style scoped>
 .n-card {
     margin-bottom: 10px;
+    border-width: 1px;
+    border-color: #c3cacf;
+    background-color: #dfe7ec;
 }
 
 .n-button {

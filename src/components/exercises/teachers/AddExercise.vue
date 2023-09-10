@@ -66,7 +66,8 @@
                             完成顯示答案:
                             <n-space>
                                 否
-                                <n-switch v-model:value="showAnswer" :checked-value="false" :unchecked-value="true" />
+                                <n-switch v-model:value="showAnswer" :checked-value="true" :unchecked-value="false" />
+
                                 是
                             </n-space>
                             <n-space vertical>
@@ -122,7 +123,7 @@ const exerciseTypeOptions = [
     }
 ]
 const timePickerDisable = ref(true)
-const showAnswer = ref(true)
+const showAnswer = ref(false)
 const timePicker = ref(-28800000)
 const realTimePicker = computed(() => {
     return (timePicker.value + 28800000) / 1000
@@ -372,7 +373,7 @@ const save = () => {
         errorFlag = true
         notification['error']({
             content: "未選擇習題類型",
-            meta: "請進入詳細設定選擇擇習題類型",
+            meta: "請進入詳細設定選擇習題類型",
             duration: 5000,
             keepAliveOnHover: true
         });
@@ -550,6 +551,13 @@ const sendExercise = async (insertData) => {
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
+}
+
+.n-card,
+.n-input {
+    border-width: 1px;
+    border-color: #c3cacf;
+    background-color: #dfe7ec;
 }
 
 .addWrap {

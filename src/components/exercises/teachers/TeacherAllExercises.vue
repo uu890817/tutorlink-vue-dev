@@ -69,6 +69,11 @@ document.title = "我的習題"
 </script>
 
 <style scoped>
+.n-card {
+    border-color: #c3cacf;
+    background-color: #dfe7ec;
+}
+
 .exerciseLinkWrap {
     margin-bottom: 10px;
     padding: 10px 0 0 50px;
