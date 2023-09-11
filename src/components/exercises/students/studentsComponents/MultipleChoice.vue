@@ -1,6 +1,7 @@
 <template>
     <div class="choiceWrap">
-        <snap class="title">{{ count }}</snap>. <snap class="title">請問哪些是數字?</snap>
+        <snap class="title">{{ "(" + props.index + ") " }}</snap>
+        <snap class="title">{{ data.content }}</snap>
 
         <div class="checkboxWrap">
             <!-- 多選題 -->
@@ -15,7 +16,8 @@
     
 <script setup>
 const props = defineProps({
-    count: Number,
+    data: Object,
+    index: Number
 })
 </script>
     

@@ -1,19 +1,25 @@
 <template>
-    <n-progress type="line" :show-indicator="false" :status="status" :percentage="timeBar" />
-
-    <Navbar></Navbar>
+    <n-progress type="line" :show-indicator="false" :status="status" :percentage="timeBar" v-if="hasTimeout" />
+    {{ exerData }}
+    <!-- <Navbar></Navbar> -->
 
     <!-- <h1>我的習題</h1> -->
     <div class="exerciseScoreWrap">
-        <h2 class="exerciseName">試卷1{{ $route.params.id }}</h2>
+        <h2 class="exerciseName">{{ exerData.exerName }}</h2>
         <h3 class="exerciseScore">
-            <n-countdown :duration="duration" :active="active" @finish="noTime" />
+            <n-countdown :duration="duration" :active="active" @finish="noTime" v-if="hasTimeout" />
         </h3>
 
         <div class="exercisesWrap">
-            <Choise count="1"></Choise>
-            <MultipleChoice count="2"></MultipleChoice>
-            <FillIn count="3"></FillIn>
+            <div v-for="(topic, index) in  exerData.topics">
+                <n-space justify="center">
+                    <Choise v-if="topic.type === 1" :data="topic" :index="index + 1"></Choise>
+                    <MultipleChoice v-if="topic.type === 2" :data="topic" :index="index + 1"></MultipleChoice>
+                    <FillIn v-if="topic.type === 3" :data="topic" :index="index + 1"></FillIn>
+                    <!-- {{ topic }} -->
+                </n-space>
+            </div>
+
         </div>
         <n-space justify="center">
             <n-button strong secondary round type="primary">
@@ -26,16 +32,21 @@
 
 <script setup lang="js">
 import Navbar from '@/components/public/Navbar.vue'
-
 import Choise from '@/components/exercises/students/studentsComponents/Choice.vue'
 import MultipleChoice from '@/components/exercises/students/studentsComponents/MultipleChoice.vue'
 import FillIn from '@/components/exercises/students/studentsComponents/FillIn.vue'
-
 import { NCollapse, NCollapseItem, NLoadingBarProvider } from 'naive-ui'
-
 import { ref, onMounted, watch, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useMessage, useDialog } from "naive-ui";
+import tutorlink from '@/api/tutorlink.js'
 
+const router = useRouter();
+const route = useRoute();
+
+const hasTimeout = ref(false)
+const epId = ref(route.params.id);
+const exerData = ref(null)
 const containerRef = ref(void 0);
 const active = ref(false);
 const message = useMessage();
@@ -84,11 +95,20 @@ const countdown = () => {
 
 
 onMounted(() => {
-
     document.title = "試卷1";
-    timer = setInterval(countdown, 1000)
+    if (exerData.value.exerciseConfig.timeCountDown !== -1) {
+        timer = setInterval(countdown, 1000)
+    }
+
 
 })
+
+
+const getExercise = async () => {
+    let resData = await tutorlink.get(`/student/doExercise/${epId.value}`)
+    exerData.value = resData.data
+}
+getExercise()
 
 
 

@@ -1,10 +1,11 @@
 <template>
     <div class="choiceWrap">
-        <snap class="title">{{ count }}</snap>. <snap class="title">請說明1+1如何等於2?</snap>
+        <snap class="title">{{ "(" + props.index + ") " }}</snap>
+        <snap class="title">{{ data.content }}</snap>
 
         <div class="checkboxWrap">
             <!-- 填充題 -->
-            <textarea name="" id="" cols="30" rows="10" value="我不知道"></textarea>
+            <textarea name="" id="" cols="30" rows="5" :value="answer"></textarea>
         </div>
 
     </div>
@@ -12,7 +13,9 @@
     
 <script setup>
 const props = defineProps({
-    count: Number,
+    data: Object,
+    index: Number
+
 })
 </script>
     
@@ -28,8 +31,9 @@ textarea {
     font-size: 20px;
 }
 
+
 .title {
-    font-size: 30px;
-    color: rgb(218, 7, 7);
+    font-size: 20px;
+    /* color: rgb(218, 7, 7); */
 }
 </style>

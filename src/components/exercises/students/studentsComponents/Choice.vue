@@ -1,6 +1,7 @@
 <template>
     <div class="choiceWrap">
-        <snap class="title">{{ count }}</snap>. <snap class="title">請問1+1的值為多少?</snap>
+        <snap class="title">{{ "(" + props.index + ") " }}</snap>
+        <snap class="title">{{ data.content }}</snap>
 
         <!-- 單選 -->
         <div class="radioWrap">
@@ -15,7 +16,9 @@
     
 <script setup>
 const props = defineProps({
-    count: Number,
+    data: Object,
+    index: Number
+
 })
 </script>
     
