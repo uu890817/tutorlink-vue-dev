@@ -32,10 +32,7 @@
         </router-link>
       </div>
       <div>
-        <router-link class="routerLink" to="/member/student/beteacher">
-          <!-- <img src="../assets/icon/teacher.png" style="width: 30px" /> -->
-          <div>成為老師</div>
-        </router-link>
+        <router-link to="/member/student/apply" class="routerLink" v-if="applyteacher">申請老師</router-link>
       </div>
     </div>
   </div>
@@ -55,12 +52,14 @@ import { onMounted } from 'vue'
 const router = useRouter()
 
 const type = ref(false);
+const applyteacher = ref(true)
 onMounted(() => {
   const API_URL = `/type`
   tutorlink.post(API_URL)
     .then((response) => {
       if (response.data === 2) {
         type.value = true
+        applyteacher.value = false
       }
     }
     )
