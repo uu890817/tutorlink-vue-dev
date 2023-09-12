@@ -1,25 +1,32 @@
 <template>
-    <div class="choiceWrap">
-        <snap class="title">{{ "(" + props.index + ") " }}</snap>
-        <snap class="title">{{ data.content }}</snap>
-
-        <div class="checkboxWrap">
-            <!-- 填充題 -->
-            <textarea name="" id="" cols="30" rows="5" :value="answer"></textarea>
-        </div>
-
-    </div>
+    <n-card :title="'(' + props.index + ') ' + data.content + '(填充)'">
+        <n-input type="textarea" maxlength="100" v-model:value="answer" show-count placeholder="請輸入您的回答" />
+    </n-card>
 </template>
     
 <script setup>
+import { ref, defineEmits, watch } from 'vue';
+
 const props = defineProps({
     data: Object,
     index: Number
 
 })
+
+const emits = defineEmits(['dataUpdate'])
+const answer = ref(null)
+watch(answer, () => {
+    emits('dataUpdate', answer.value, props.index - 1, props.data.topicsId, 'fillIn')
+})
+
 </script>
     
 <style scoped>
+.n-card {
+    margin-bottom: 10px;
+    min-width: 500px;
+}
+
 .choiceWrap {
     min-width: 100px;
     padding: 20px 50px;
