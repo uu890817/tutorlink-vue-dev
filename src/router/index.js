@@ -57,11 +57,11 @@ const router = createRouter({
           redirect: { name: "studentlesson" },
           component: () => import("@/views/UserStudent.vue"),
           children: [
-            {
-              path: "beteacher",
-              name: "beteacher",
-              component: () => import("@/components/personal/BeTeacher.vue"),
-            },
+            // {
+            //   path: "beteacher",
+            //   name: "beteacher",
+            //   component: () => import("@/components/personal/BeTeacher.vue"),
+            // },
             {
               path: "studentlesson",
               name: "studentlesson",
