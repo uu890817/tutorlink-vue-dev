@@ -3,7 +3,7 @@
         <Slide v-for="slide in teacherCard" :key="slide">
             <div class="card cardStyle" style="width: 18rem;">
                 <div class="cartImgStyle">
-                    <img :src="slide.lessonImg" class="card-img-top cardImg" alt="...">
+                    <img :src="slide.image" class="card-img-top cardImg" alt="...">
                     <div class="favoriateIcon">
                         <n-icon size="40" v-if="favoriateHover(slide.lessonId)" @click="unfavoriate(slide.lessonId)">
                             <heart />
@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class=" card-body text-start">
-                    <h5 class="card-title cardTitle">{{ slide.className }}</h5>
+                    <h5 class="card-title cardTitle">{{ slide.lessonName }}</h5>
                     <div class="card-text cardText">{{ slide.teacherInfo }}</div>
 
                 </div>
@@ -40,6 +40,20 @@ import { ref, onMounted } from 'vue'
 import { Heart, HeartOutline } from '@vicons/ionicons5'
 import tutorlink from '../../api/tutorlink'
 import { useNotification } from 'naive-ui'
+import { useFavoriateListStore } from '../../stores/useFavoriateListStore.js'
+import { storeToRefs } from 'pinia'
+
+// pinia
+const favoriateListStore = useFavoriateListStore()
+const { favoriateListAjax } = favoriateListStore
+const { favoriateList } = storeToRefs(favoriateListStore)
+onMounted(async () => {
+    getAllCookies()
+    favoriateListAjax(userID.value)
+});
+
+
+// pinia
 
 const notification = useNotification()
 
@@ -63,7 +77,7 @@ const isFavoriate = () => {
 }
 
 
-const unFavoriate = () => {
+const unFavoriateSign = () => {
     notification["success"]({
         content: '提示',
         meta: '已取消收藏',
@@ -76,33 +90,44 @@ const unFavoriate = () => {
 
 
 
-const favoriateList = ref([])
+// const favoriateList = ref([])
 const userID = ref("");
 const teacherCard = ref([
     {
         lessonId: 1,
-        lessonImg: 'https://picsum.photos/200/150?random=1',
-        className: '課程名稱',
-        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！'
+        image: 'https://picsum.photos/200/150?random=1',
+        lessonName: '數學初級課程',
+        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！',
+        teacherName: '教師一'
     },
     {
         lessonId: 2,
-        lessonImg: 'https://picsum.photos/200/150?random=2',
-        className: '課程名稱2',
-        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！'
+        image: 'https://picsum.photos/200/150?random=2',
+        lessonName: '科學高級課程',
+        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！',
+        teacherName: '教師一'
     },
     {
         lessonId: 3,
-        lessonImg: 'https://picsum.photos/200/150?random=3',
-        className: '課程名稱3',
-        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！'
+        image: 'https://picsum.photos/200/150?random=3',
+        lessonName: '歷史專業課程',
+        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！',
+        teacherName: '教師一'
     },
     {
         lessonId: 4,
-        lessonImg: 'https://picsum.photos/200/150?random=4',
-        className: '課程名稱4',
-        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！'
+        image: 'https://picsum.photos/200/150?random=4',
+        lessonName: '英文進階課程',
+        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！',
+        teacherName: '教師二'
     },
+    {
+        lessonId: 5,
+        image: 'https://picsum.photos/200/150?random=5',
+        lessonName: '藝術創作課程',
+        teacherInfo: '探索攝影藝術的基礎與技巧，解析攝影世界的奧秘與美感，歡迎加入我們的攝影初階入門課程！',
+        teacherName: '教師二'
+    }
 ])
 
 const currentTime = () => {
@@ -147,7 +172,7 @@ const unfavoriate = async (lid) => {
         try {
             const response = await tutorlink.delete(`favorite?id=${favoriteId}`);
             // console.log(response);
-            unFavoriate()
+            unFavoriateSign()
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -156,18 +181,18 @@ const unfavoriate = async (lid) => {
 
 
 // 收藏初始化
-onMounted(async () => {
-    getAllCookies()
-    if (userID.value) {
-        try {
-            const response = await tutorlink.get("/favorite?uid=" + userID.value);
-            favoriateList.value = response.data
-            // console.log(favoriateList.value);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    }
-});
+// onMounted(async () => {
+//     getAllCookies()
+//     if (userID.value) {
+//         try {
+//             const response = await tutorlink.get("/favorite?uid=" + userID.value);
+//             favoriateList.value = response.data
+//             // console.log(favoriateList.value);
+//         } catch (error) {
+//             console.error('Error fetching data:', error);
+//         }
+//     }
+// });
 // 取得cookies
 
 const getAllCookies = () => {
@@ -193,23 +218,19 @@ const settings = {
 
 const breakpoints = {
 
-    // 400: {
-    //     itemsToShow: 1,
-    //     snapAlign: 'center',
-    // },
-    770: {
+    400: {
         itemsToShow: 1,
         snapAlign: 'center',
     },
-    1000: {
+    770: {
         itemsToShow: 2,
         snapAlign: 'center',
     },
-    1300: {
+    1000: {
         itemsToShow: 3,
         snapAlign: 'start',
     },
-    1500: {
+    1400: {
         itemsToShow: 4,
         snapAlign: 'start',
     },
@@ -230,7 +251,7 @@ const breakpoints = {
 .cardStyle {
     /* background-color: #ecf8f8; */
     max-height: 430px;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 .favoriateIcon {

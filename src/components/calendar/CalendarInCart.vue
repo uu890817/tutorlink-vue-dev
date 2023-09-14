@@ -82,7 +82,7 @@
                                 <!-- 顯示選取的課程詳細內容 -->
                                 <div class="text-right" v-for="item in selectedTimes">
                                     <div v-if="item === getSelectedTimeMillisecond(time, date)">
-                                        <h4>{{ shoppingCartItem[index].title }}</h4>
+                                        <h4>{{ shoppingCartItem.value[index].title }}</h4>
                                         <div>課程時間:{{ time < 10 ? '0' + time : time }}:00~{{ time + 1 < 10 ? '0' + (time + 1)
                                             : time + 1 }}:00 </div>
                                         </div>
@@ -115,29 +115,39 @@
             </div>
         </div>
     </div>
+    <!-- {{ selectedTimes }} -->
 </template>
 <script setup>
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia'
-import { useShoppingCartStore } from '@/stores/useShoppingCartStore';
-const cartStore = useShoppingCartStore();
-const { shoppingCartItem } = storeToRefs(cartStore);
+import { useShoppingCartStore } from '../../stores/useShoppingCartStore.js';
+const shoppingCart = useShoppingCartStore();
+const { shoppingCartItem } = storeToRefs(shoppingCart);
 // 目前的時間
 const currentTime = new Date();
 // 起始日期和結束日期的狀態
 const startDate = ref(new Date());
 const endDate = ref(new Date());
 
+
+
+
+
 const props = defineProps({
-    shoppingCartItem: Array,
+    shoppingCartItem1: Array,
     index: Number,
 })
 const index = props.index;
-const selectedTimes = props.shoppingCartItem[index].selectedTimes;
+
+console.log(shoppingCartItem.value[index]);
 
 const unavailableTime = ref([
     { millisecond: 1694070000000, teacher: "小花", class: "數學課" },
 ]);
+
+
+
+
 
 /**
  * 處理時間格子的點擊事件，用於選取或取消選取特定的時間。
@@ -170,19 +180,22 @@ const handleTimeClick = (time, date) => {
     const millisecond = new Date(str).getTime();
 
     // 在已選取的時間列表中尋找該時間的索引
-    const index = selectedTimes.indexOf(millisecond);
+
+    const newIndex = shoppingCartItem.value[index].selectedTimes.indexOf(millisecond);
 
     const currentCountindex = props.index;
     const currentCount = useShoppingCartStore().getCurrentCount(currentCountindex);
 
-    if (selectedTimes.length <= currentCount) {
+
+    if (shoppingCartItem.value[index].selectedTimes.length <= currentCount) {
         // 如果找不到該時間，則將其添加到已選取的時間列表中
-        if (index === -1 && selectedTimes.length < currentCount) {
-            selectedTimes.push(millisecond);
-        } else if (index !==-1) {
+        if (newIndex === -1 && shoppingCartItem.value[index].selectedTimes.length < currentCount) {
+            shoppingCartItem.value[index].selectedTimes.push(millisecond);
+        } else if (newIndex !== -1) {
             // 如果找到了該時間，則從已選取的時間列表中移除它
-            selectedTimes.splice(index, 1);
+            shoppingCartItem.value[index].selectedTimes.splice(newIndex, 1);
         }
+
     }
 };
 
@@ -194,6 +207,7 @@ const handleTimeClick = (time, date) => {
  * @returns {boolean} - 如果時間格子在unavailableTime中，返回 true；否則返回 false。
  */
 const isTimeUnavailable = (time, date) => {
+
     // 創建一個新的日期對象，基於起始日期
     const selectedDate = new Date(startDate.value);
 
@@ -237,8 +251,13 @@ const isTimeSelected = (time, date) => {
     // 獲取時間的毫秒表示
     const millisecond = new Date(str).getTime();
 
+
+    const selectedTimes = useShoppingCartStore().getSelectedTimes();
+
+    // console.log(selectedTimes);
+
     // 使用 Array.prototype.some 方法檢查是否有任何已選取的時間與給定時間匹配
-    return selectedTimes.includes(millisecond);
+    return shoppingCartItem.value[index].selectedTimes.includes(millisecond);
 };
 
 /**

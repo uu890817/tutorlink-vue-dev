@@ -12,7 +12,7 @@
             <div class="col-md-8">
                 <div class=" card-body text-start">
                     <h5 class="card-title cardTitle">{{ list.lesson.lessonName }}</h5>
-                    <div class="card-text cardText">{{ list.lesson.lessonName }}</div>
+                    <!-- <div class="card-text cardText">{{ list.lesson.lessonName }}</div> -->
 
                 </div>
                 <div class="card-body text-end">
@@ -27,23 +27,27 @@
     
 <script setup>
 import { ref, onMounted } from 'vue'
-// import image from '@/assets/lessonImage/image-outline.svg'
 import { Close } from '@vicons/ionicons5'
 import tutorlink from '../../api/tutorlink'
-
-
-
-const favoriateList = ref([])
+import { useFavoriateListStore } from '../../stores/useFavoriateListStore.js'
+import { storeToRefs } from 'pinia'
 const userID = ref("");
+
+// pinia
+const favoriateListStore = useFavoriateListStore()
+const { favoriateListAjax } = favoriateListStore
+const { favoriateList } = storeToRefs(favoriateListStore)
+onMounted(async () => {
+    getAllCookies()
+    favoriateListAjax(userID.value)
+});
 
 
 
 // 刪除收藏
 const unfavoriate = async (lid) => {
     const index = favoriateList.value.findIndex(item => item.favoriteId === lid);
-    console.log(index);
     if (index !== -1) {
-        // console.log(favoriateList.value[index].favoriteId);
         const favoriteId = favoriateList.value[index].favoriteId
         favoriateList.value.splice(index, 1);
         try {
@@ -55,21 +59,7 @@ const unfavoriate = async (lid) => {
 }
 
 
-// 收藏初始化
-onMounted(async () => {
-    getAllCookies()
-    if (userID.value) {
-        try {
-            const response = await tutorlink.get("/favorite?uid=" + userID.value);
-            favoriateList.value = response.data
-            console.log(response);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    }
-});
 // 取得cookies
-
 const getAllCookies = () => {
     var cookies = document.cookie.split(';');
     var cookieObj = {};
