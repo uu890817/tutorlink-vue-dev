@@ -24,35 +24,25 @@
         </div> -->
     </div>
     <hr>
-    <h2>問與答</h2>
-    <div class="queWrap">
-        <textarea rows="4" cols="50" placeholder="在這裡輸入問題...."></textarea>
-        <button>送出</button>
-    </div>
+
+    <n-space class="queWrap" vertical>
+        <h2>問與答</h2>
+        <n-input type="textarea" maxlength="100" show-count placeholder="請輸入您的問題" />
+        <n-space justify="end">
+            <n-button type="info">
+                送出提問
+            </n-button>
+        </n-space>
+
+        <QA></QA>
 
 
-    <div class="ansWrap">
-        <n-collapse>
-            <p>來自 王一 於 2023/01/01 00:00 :</p>
-            <p>為什麼1+1等於2</p>
-            <n-collapse-item title="點我看更多回應" name="1">
-                <div>
-                    <p>來自 老師 於 2023/01/01 00:00 :</p>
-                    <p>為什麼你會有這個問題</p>
-                </div>
-                <hr>
-                <div>
-                    <p>來自 李二 於 2023/01/01 00:00 :</p>
-                    <p>看戲</p>
-                </div>
-            </n-collapse-item>
-        </n-collapse>
-    </div>
+    </n-space>
 </template>
 
 <script setup lang="js">
 import Navbar from '@/components/public/Navbar.vue'
-
+import QA from '@/components/exercises/students/studentsComponents/Question.vue'
 import Choise from '@/components/exercises/students/studentsComponents/FinishChoice.vue'
 import MultipleChoice from '@/components/exercises/students/studentsComponents/FinishMultipleChoice.vue'
 import FillIn from '@/components/exercises/students/studentsComponents/FinishFillIn.vue'
