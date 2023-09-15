@@ -1,14 +1,14 @@
 <template>
-    <div>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="registerModalLabel">註冊您的 TutorLink 帳戶</h1>
-                    <button type="button" class="btn-close btn btn-light" data-bs-dismiss="modal" aria-label="Close"
-                        @click="initialization()"></button>
-                </div>
-                <div class="modal-body d-flex flex-column align-items-center">
-                    <div style="min-width: 100%;">
+    <ManageNavbar></ManageNavbar>
+    <div style="display: flex; justify-content: center">
+        <div class="modal-content" style="width: 20%; margin-top: 5%;">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="registerModalLabel">註冊您的 TutorLink 帳戶</h1>
+            </div>
+            <br>
+            <div>
+                <div class="modal-body">
+                    <div style=" min-width: 100%;">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="floatingInput" placeholder="" v-model="name"
                                 @blur="checknameinput()" autocomplete="off" oncopy="return false" onpaste="return false"
@@ -50,21 +50,22 @@
                             <div v-if="pwddoublechecksucess" class="success-text">密碼相同，請繼續</div>
                         </div>
                     </div>
-                    <div style="min-width: 100%;">
+                    <div style="display: flex;justify-content: center;">
+                        <button class="btn bar" type="button" @click="normalregister">註冊</button>
+                    </div>
+                    <div style="display: flex;align-items: center;margin:0 auto;padding-bottom:10px;">
+                        <div class="caption-text">已擁有帳號嗎?&emsp;</div>
+                        <a type="button" class="caption-text" href="http://localhost:5173/login"
+                            style="color: rgb(23, 46, 110);">登入</a>
+                    </div>
+                    <div class="line-text-box">
+                        <hr>
+                        <div class="caption-text">使用其他帳號輕鬆註冊</div>
                         <hr>
                     </div>
-                    <button class="btn btn-primary" type="button" @click="normalregister"
-                        style="min-width: 80%;">註冊</button>
-
                     <div class="thirdlogin">
                         <GoogleRegister data-bs-dismiss="modal">使用Google帳號註冊</GoogleRegister>
                     </div>
-                </div>
-
-                <div class="modal-footer">
-                    已經擁有帳戶?
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal" data-bs-toggle="modal"
-                        data-bs-target="#loginModal">登入</button>
                 </div>
             </div>
         </div>
@@ -76,8 +77,7 @@ import tutorlink from '@/api/tutorlink.js';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 import GoogleRegister from '../login/googleregiter.vue'
-import { Mail, Person, LockClosed } from "@vicons/ionicons5";
-
+import ManageNavbar from "@/components/public/ManageNavbar.vue"
 const router = useRouter()
 
 
@@ -201,9 +201,6 @@ button {
     margin-top: 5px;
 }
 
-.modal-footer {
-    justify-content: space-around
-}
 
 .thirdlogin {
     display: flex;
@@ -218,14 +215,51 @@ button {
 }
 
 .modal-header {
-    background-color: #343a40;
-    color: white;
+    color: rgba(76, 87, 102, 0.6);
     font-weight: bold;
 }
 
-.modal-footer {
+
+.caption-text {
+    font-size: 14px;
+    color: rgba(76, 87, 102, 0.6);
+}
+
+hr {
+    display: block;
+    /* unicode-bidi: isolate; */
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    overflow: hidden;
+    border-style: inset;
+    border-width: 1px;
+}
+
+.bar {
+    min-width: 100%;
     background-color: #343a40;
     color: white;
-    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #51585e;
+}
+
+.line-text-box {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 16px 0 16px 0;
+}
+
+.line-text-box hr {
+    height: 2px;
+    border: none;
+    background-color: #2f2f29;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1;
+    flex: 1 1;
 }
 </style>
