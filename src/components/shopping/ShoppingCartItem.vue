@@ -7,21 +7,13 @@
                     <div class="main d-flex">
                         <!-- 課程圖片 -->
                         <div>
-                            <!-- 等link -->
-                            <!-- <a :href='item.link' :title='item.title' target="_self">
-                            <img :src='item.img' alt="image">
-                        </a> -->
-                            <a :title='item.title' target="_self">
+                            <a :href='item.link' :title='item.title' target="_self">
                                 <img :src='item.img' alt="image">
                             </a>
                         </div>
                         <!-- 課程名稱 -->
                         <div class="ps-3">
-                            <!-- 等link -->
-                            <!-- <a :href='item.link' :title='item.title' target="_self">
-                            <span class="fw-bold">{{ item.title }}</span>
-                        </a> -->
-                            <a :title='item.title' target="_self">
+                            <a :href='item.link' :title='item.title' target="_self">
                                 <span class="fw-bold">{{ item.title }}</span>
                             </a>
                         </div>
@@ -47,11 +39,10 @@
                 <div
                     class="offset-8 offset-lg-0 col-4 col-lg-1 p-0 text-end my-auto pe-2 pe-lg-0 pt-2 pt-lg-0 text-lg-center">
                     <!-- 刪除 -->
-                    <button class="btn btn-outline-primary my-1" type="submit"
-                        @click="deleteCartItem(item.id)">刪除課程</button>
+                    <a class="deleteBtn my-2" type="submit" @click="deleteCartItem(item.id)">刪除課程</a>
                     <!-- 選擇時間 -->
-                    <button v-if="item.type !== 0" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
-                        :data-bs-target="'#' + index">選擇時間</button>
+                    <a v-if="item.type !== 0" class="selectTimeBtn" type="button" data-bs-toggle="modal"
+                        :data-bs-target="'#' + index">選擇時間</a>
                     <!-- 選擇時間彈出視窗 -->
                     <div class="modal fade modal-lg" :id="index" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true" data-bs-backdrop="static">
@@ -59,8 +50,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">選擇上課時間</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        @click="updateItemCount(item.id)"></button>
                                 </div>
                                 <!-- 選擇時間彈出視窗內容 -->
                                 <div class="modal-body">
@@ -102,5 +93,35 @@ const { shoppingCartItem } = storeToRefs(cartStore);
 <style scoped>
 .n-divider {
     margin: 1px;
+}
+
+.deleteBtn {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #f28482;
+    color: #fffcf2;
+    border-radius: 0;
+    transition: .2s;
+    margin-left: 10px;
+}
+
+.deleteBtn:hover {
+    cursor: pointer;
+    background-color: #f2a2a1;
+}
+
+.selectTimeBtn {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #635f58;
+    color: #fffcf2;
+    border-radius: 0;
+    transition: .2s;
+    margin-left: 10px;
+}
+
+.selectTimeBtn:hover {
+    cursor: pointer;
+    background-color: #81786a;
 }
 </style>

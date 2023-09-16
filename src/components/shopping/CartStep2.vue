@@ -15,12 +15,6 @@
             <n-divider></n-divider>
             <div class="px-2 py-2">
                 <h5 class="col-6 col-lg-6 mx-0">付款方式</h5>
-                <!-- <n-space vertical>
-                <n-radio-group v-model:value="value" name="radiobuttongroup1">
-                    <n-radio-button v-for="paymentmethod in paymentmethods" :key="paymentmethod.value"
-                        :value="paymentmethod.value" :label="paymentmethod.label" />
-                </n-radio-group>
-            </n-space> -->
                 <div class="d-flex">
                     <div class="payStyle" :class="[{ 'paySelected': isPaySelected('LinePay') }]">
                         <img src="/LINE-Pay.png" alt="" style="width:100%" @click="payMethod('LinePay')">
@@ -35,23 +29,26 @@
             </div>
         </div>
     </div>
-    <div class=" priceStyle">
+    <div class="footer"></div>
 
-        <div class="d-flex totalPriceStyle">
-            <h3 class="payBy">
-                已選擇付款方式 : {{ value }}
-            </h3>
-            <div class="d-flex align-items-center">
-                <div class="row px-2 mx-0 pe-2 " style="width: 200px;">
-                    <h5 class="col-6 col-lg-6 mx-0 text-lg-center py-2 my-0">總金額</h5>
-                    <h5 class="col-6 col-lg-6 mx-0 text-lg-center py-2 my-0">
-                        $<n-number-animation ref="numberAnimationInstRef" :from="0" :to="totalPrice" />
-                    </h5>
-                </div>
-                <div>
-                    <a class="toOrder" @click="proceedToStep3">
-                        完成
-                    </a>
+    <div class=" priceStyle">
+        <div class="container">
+            <div class="d-flex totalPriceStyle">
+                <h3 class="payBy">
+                    已選擇付款方式 : {{ value }}
+                </h3>
+                <div class="d-flex align-items-center">
+                    <div class="row px-2 mx-0 pe-2 " style="width: 200px;">
+                        <h5 class="col-6 col-lg-6 mx-0 text-lg-center py-2 my-0">總金額</h5>
+                        <h5 class="col-6 col-lg-6 mx-0 text-lg-center py-2 my-0">
+                            $<n-number-animation ref="numberAnimationInstRef" :from="0" :to="totalPrice" />
+                        </h5>
+                    </div>
+                    <div>
+                        <a class="toOrder" @click="proceedToStep3">
+                            完成
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,32 +64,21 @@ import { ref } from "vue";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const cartStore = useShoppingCartStore();
+const { pay } = cartStore;
 const { shoppingCartItem, totalPrice } = storeToRefs(cartStore);
 const value = ref(null);
 
-
-// const paymentmethods = [
-//     {
-//         value: "0",
-//         label: "LinePay"
-//     },
-//     {
-//         value: "1",
-//         label: "其他"
-//     },
-// ].map((s) => {
-//     s.value = s.value.toLowerCase();
-//     return s;
-// });
 const proceedToStep3 = () => {
     if (value.value === null) {
         alert('請選擇付款方式！');
     } else {
+        pay();
         router.push({ name: 'step3' });
     }
 };
 
 const payMethod = (str) => {
+    shoppingCartItem.value.payment = 1;
     value.value = str;
 }
 
@@ -114,7 +100,6 @@ const isPaySelected = (str) => {
 }
 
 .card {
-    width: 85%;
     margin: 15px auto;
 }
 
@@ -143,10 +128,10 @@ const isPaySelected = (str) => {
 }
 
 .totalPriceStyle {
+    position: relative;
+    left: 9px;
     margin: 0 auto;
     background-color: #403d39;
-    min-width: 57%;
-    max-width: 57%;
     color: #fffcf2;
     padding: 15px 20px;
     align-items: center;
@@ -188,5 +173,9 @@ const isPaySelected = (str) => {
 
 .payBy {
     margin: 0;
+}
+
+.footer {
+    height: 70px;
 }
 </style>

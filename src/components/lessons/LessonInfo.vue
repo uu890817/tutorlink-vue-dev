@@ -1,65 +1,130 @@
 <template>
     <div class="container">
-        <div class="lesson-info-block">
-            <h2>XXX老師的基礎韓文課程</h2>
-            <div class="title">
-                <div>
-                    <img src="@/assets/lessonImage/image-outline.svg">
+        <div style="position: relative;">
+            <div style="
+    border-radius: 25px;    
+    margin: 16px;">
+                <div class="lesson-info-block">
+                    <div style="padding-left: 32px;">
+                        <h2>{{ lessons.lessonName }}</h2>
+                    </div>
+                    <div class="title">
+                        <div>
+                            <img :src="`${str}${lessons.image}`" alt="upload" style="
+                       width: 400px;height: 240px;">
+                        </div>
+                        <div style="text-align: center;">
+                            <priceButton :price="price"></priceButton>
+                        </div>
+                    </div>
                 </div>
-                <div style="text-align: center;">
+                <br>
+                <br>
+                <br>
+                <br>
+                <div style="display: inline-block; position: relative; bottom: 80px; left: 80px;">
+                    <h2 style="margin-top: 8px;">課程內容</h2>
+                    <div class="info-block" :style="{ height: blockHeight }">
+                        <div v-html="visibleContent"></div>
+                        <div style="margin-left: 75%; display: inline-block;">
+                            <button @click="toggleContent" v-if="showToggleButton" style="border: none;
+                        background: none;color: #f77f00;border-bottom: 1px solid #f77f00;
+                        ">
+                                {{ toggleButtonText }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: inline-block; position: absolute; right: 16px; bottom: 16px;">
                     <button type="button" class="reportbtn">檢舉</button>
-                    <priceButton></priceButton>
-                </div>
-            </div>
-        </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div style="display: inline-block; position: relative; bottom: 80px;">
-            <h2 style="margin-top: 8px;">課程內容</h2>
-            <div class="info-block" :style="{ height: blockHeight }">
-                {{ showPartialText ? partialText : fullText }}
-                <div class="info-btn">
-                    <button @click="toggleText">
-                        {{ showPartialText ? '顯示更多' : '顯示更少' }}
-                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <hr>
 </template>
     
 <script setup>
 
-import { onMounted, ref } from 'vue';
-
-const text = "歡迎來到韓文基礎課程！在這門課程中，我們將帶你進入韓國文化的奇妙世界。從基本的拼音和數字開始，你將學習如何閱讀和書寫韓文字。我們將深入探討韓文的語法結構，讓你能夠建立起基本的對話能力。通過有趣的對話練習和互動，你將學會用韓文表達自己的想法，並能夠介紹自己、問候他人以及討論時間和日期。我們課程中的第100個字，正是你將在這個旅程中學到的數字，從一到十，為你的韓文學習之旅劃上完美的句號。讓我們一起開始吧！222222222222222222222222222222222222222222222222222222222222222222222222222222222222";
-const showPartialText = ref(true);
-const blockHeight = ref("auto");
-
-const partialText = text.slice(0, 20);
-const fullText = text;
-
-const props = defineProps({
-    price: Number,
-})
-
-const toggleText = () => {
-    showPartialText.value = !showPartialText.value;
-    blockHeight.value = showPartialText.value ? "auto" : "100%";
-};
+import { onMounted, ref, watch } from 'vue';
+import tutorlink from '@/api/tutorlink.js';
+import { useRoute } from 'vue-router'
 import priceButton from './LessonPriceButton.vue';
+const route = useRoute()
+const testLessonId = ref(2)
+
+//取得課程詳細資料
+const lessonDetail = ref([])
+const content = ref('')
+const visibleContent = ref('');
+const fullContentVisible = ref(false);
+tutorlink.get(`/findLessonDetailByLessonId?lessonId=${testLessonId.value}`).then((response) => {
+    lessonDetail.value = response.data
+    content.value = lessonDetail.value.imformation
+    visibleContent.value = content.value.slice(0, 43);
+})
+//取得課程資料
+const lessons = ref([])
+const subjectId = ref()
+const price = ref('')
+tutorlink.post(`/findLessons/${testLessonId.value}`).then((response) => {
+    lessons.value = response.data
+    console.log(lessons);
+    subjectId.value = lessons.value.subject.subjectId
+    price.value = lessons.value.price
+    // console.log(price.value);
+})
+//讀取Base64資料的Headers
+const str = 'data:imagae/png;base64,';
+
+
+//調整課程內容的顯示更多、顯示更少
+const blockHeight = ref("auto");
+const showToggleButton = ref(true); // 初始化為顯示按鈕
+const isContentVisible = ref(false);
+const toggleButtonText = ref('顯示更多');
+
+const toggleContent = () => {
+    fullContentVisible.value = !fullContentVisible.value;
+    if (fullContentVisible.value) {
+        visibleContent.value = content.value; // 顯示完整內容
+    } else {
+        visibleContent.value = content.value.slice(0, 43); // 顯示前20個字符
+    }
+    blockHeight.value = fullContentVisible.value ? 'auto' : '120px';
+    toggleButtonText.value = fullContentVisible.value ? '顯示更少' : '顯示更多';
+};
+
+
+
+
+
+
 
 onMounted(() => {
-    console.log(price)
-})
+    // 如果內容長度大於20，才顯示切換按鈕
+    if (content.value.length > 43) {
+        showToggleButton.value = true;
+    }
+});
+
+// 監聽isContentVisible變化，根據是否顯示內容改變按鈕文本
+watch(isContentVisible, (newVal) => {
+    toggleButtonText.value = newVal ? '顯示更少' : '顯示更多';
+    console.log('isContentVisible:', newVal);
+    console.log('visibleContent:', visibleContent.value);
+});
+
+
+
+
+
+
 </script>
     
 <style scoped>
 .lesson-info-block {
-    margin-top: 120px;
+    margin-left: 48px;
+    margin-top: 16px;
 }
 
 .lesson-info-block img {
@@ -96,8 +161,8 @@ onMounted(() => {
 
 .title {
     display: flex;
-    justify-content: space-between;
-    margin-right: 300px;
+    justify-content: space-around;
+    margin-right: 80px;
 
 }
 
@@ -124,8 +189,15 @@ onMounted(() => {
     border: 1px solid red;
     color: red;
     background-color: #fff;
-    width: 240px;
-    height: 80px;
+    width: 120px;
+    height: 40px;
+    border-radius: 15px;
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 1;
+    /* 以确保按钮在上方 */
+    /* 其他样式保持不变 */
 }
 
 .reportbtn:hover {

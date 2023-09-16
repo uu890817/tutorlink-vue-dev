@@ -15,7 +15,7 @@
     >
   </div>
   <div class="page">
-    <h1 style="margin-top: 10px">課程表</h1>
+    <h1 style="margin-top: 10px">課程表編輯</h1>
     <p>建立章節、講座，開始組合您的課程</p>
     <hr />
 
@@ -72,7 +72,7 @@
       </ul>
     </div>
 
-    <button @click="exitAddCourse" class="smbutton">提交課程以待審核</button>
+    <button @click="exitAddCourse" class="smbutton">完成課程表變更</button>
   </div>
 </template>
 
@@ -82,24 +82,100 @@ import { useRoute, useRouter } from "vue-router";
 import tutorlink from "@/api/tutorlink.js";
 
 const route = useRoute();
-const router = useRouter();
-const lessonDetailIdData = ref(route.query.lessonDetail);
-console.log("Received lessonDetailId:", lessonDetailIdData.value);
-
-const exitAddCourse = () => {
-  router.push({ name: "teacherAllVideoCourse" });
-};
-
+const lessonId = ref(route.params.lessonId);
+console.log("Received lessonDetailId:", lessonId.value);
+const videoList = ref([]);
 const video = ref({
   chapterName: "",
   videoFile: null,
 });
-
-const videoList = ref([]);
-let currentSort = 0;
-const videoCount = ref("0");
 const videoPlayer = ref(null);
+const router = useRouter();
+const exitAddCourse = () => {
+  router.push({ name: "teacherAllVideoCourse" });
+};
 
+const handleFileChange = (event) => {
+  video.value.videoFile = event.target.files[0];
+  console.log(video.value.videoFile);
+  console.log("已讀取影片");
+
+  // 获取video元素的引用
+  if (videoPlayer.value && video.value.videoFile) {
+    console.log("有影片");
+    videoPlayer.value.src = URL.createObjectURL(video.value.videoFile);
+  }
+};
+
+//取得所有課程
+const getAllVideo = async () => {
+  const response = await tutorlink.get(`/findVideoByCourse/${lessonId.value}`);
+  //   videoList.value = response.data;
+  const videoData = response.data;
+  console.log("videoData:", videoData);
+
+  //取得每一筆影片id傳入getvideo()
+  for (const videoItem of videoData) {
+    videoItem.courseUrl = await getVideo(videoItem.videoId);
+  }
+
+  videoList.value = videoData;
+};
+getAllVideo();
+
+const videoUrls = [];
+
+//取得影片
+const getVideo = async (videoId) => {
+  try {
+    const response = await tutorlink.get(`/getVideo/${videoId}`, {
+      responseType: "blob",
+    });
+
+    const videoBlob = response.data;
+
+    const videoUrl = URL.createObjectURL(videoBlob);
+    return videoUrl;
+    // console.log(videoUrl);
+    // videoUrls.push(videoUrl);
+  } catch (error) {
+    console.error("獲取影片出錯", error);
+  }
+};
+console.log("影片URL數組:", videoUrls);
+
+const editChapterName = (videoItem) => {
+  const chapterName = videoItem.chapterName;
+  const videoId = videoItem.videoId;
+  const requestBody = {
+    chapterName: chapterName,
+  };
+  console.log(videoId);
+  console.log(chapterName);
+  tutorlink.put(`/updateVideoName/${videoId}`, requestBody, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log("標題已更新");
+  alert("標題已更新");
+};
+
+const confirmDeleteVideo = (videoId) => {
+  const userConfirmed = window.confirm("確定要刪除嗎?");
+  if (userConfirmed) {
+    deleteVideo(videoId);
+  } else {
+  }
+};
+
+const deleteVideo = async (videoId) => {
+  tutorlink.delete(`/deleteVideo/${videoId}`);
+  console.log("已刪除videoId:" + videoId);
+  getAllVideo();
+};
+
+let currentSort = 0;
 const uploadVideos = async () => {
   try {
     if (!video.value.videoFile || video.value.chapterName == "") {
@@ -109,7 +185,7 @@ const uploadVideos = async () => {
     }
 
     video.value.lessonDetail = {
-      lessonDetailId: lessonDetailIdData.value,
+      lessonDetailId: lessonId.value,
     };
 
     const formData = new FormData();
@@ -142,104 +218,6 @@ const uploadVideos = async () => {
     // 處理錯誤
     console.error("上傳video時出錯", error);
   }
-};
-
-const handleFileChange = (event) => {
-  video.value.videoFile = event.target.files[0];
-  console.log(video.value.videoFile);
-  console.log("已讀取影片");
-
-  // 获取video元素的引用
-  if (videoPlayer.value && video.value.videoFile) {
-    console.log("有影片");
-    videoPlayer.value.src = URL.createObjectURL(video.value.videoFile);
-  }
-};
-
-// 获取课程影片列表
-// const getCourseVideos = async () => {
-//   try {
-//     const response = await tutorlink.get(
-//       `/findVideoByCourse/${lessonDetailIdData.value}`
-//     );
-//     console.log("影片列表:", response.data);
-//     videoList.value = response.data;
-//     console.log(videoList.value[0].chapterName);
-//     videoCount.value = videoList.value.length;
-//   } catch (error) {
-//     console.error("獲取影片時出錯", error);
-//   }
-// };
-
-//取得所有課程
-const getAllVideo = async () => {
-  const response = await tutorlink.get(
-    `/findVideoByCourse/${lessonDetailIdData.value}`
-  );
-  // videoList.value = response.data;
-  const videoData = response.data;
-  console.log("videoData:", videoData);
-  // videoCount.value = videoList.value.length;
-
-  //取得每一筆影片id傳入getvideo()
-  for (const videoItem of videoData) {
-    videoItem.courseUrl = await getVideo(videoItem.videoId);
-  }
-
-  videoList.value = videoData;
-};
-getAllVideo();
-
-//取得影片
-const getVideo = async (videoId) => {
-  try {
-    const response = await tutorlink.get(`/getVideo/${videoId}`, {
-      responseType: "blob",
-    });
-
-    const videoBlob = response.data;
-
-    const videoUrl = URL.createObjectURL(videoBlob);
-    return videoUrl;
-    // console.log(videoUrl);
-    // videoUrls.push(videoUrl);
-  } catch (error) {
-    console.error("獲取影片出錯", error);
-  }
-};
-onMounted(() => {
-  // getCourseVideos();
-});
-
-const editChapterName = (videoItem) => {
-  const chapterName = videoItem.chapterName;
-  const videoId = videoItem.videoId;
-  const requestBody = {
-    chapterName: chapterName,
-  };
-  console.log(videoId);
-  console.log(chapterName);
-  tutorlink.put(`/updateVideoName/${videoId}`, requestBody, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  console.log("標題已更新");
-  alert("標題已更新");
-};
-
-const confirmDeleteVideo = (videoId) => {
-  const userConfirmed = window.confirm("確定要刪除嗎?");
-  if (userConfirmed) {
-    deleteVideo(videoId);
-  } else {
-  }
-};
-
-const deleteVideo = async (videoId) => {
-  tutorlink.delete(`/deleteVideo/${videoId}`);
-  console.log("已刪除videoId:" + videoId);
-  getAllVideo();
 };
 </script>
 
