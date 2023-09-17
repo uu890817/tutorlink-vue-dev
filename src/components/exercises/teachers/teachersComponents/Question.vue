@@ -3,7 +3,7 @@
         <n-space justify="space-between">
             <n-space>
                 <span class="asker">⩥ 來自 <span style="color: rgb(9, 88, 61);">{{ askerName }}</span> 在 {{ askTime
-                }} 發問 :</span>
+                }} :</span>
             </n-space>
             <n-space justify="end" v-if="isMyQuestion">
                 <n-button type="warning" @click="sendQuestion">

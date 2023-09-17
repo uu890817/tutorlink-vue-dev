@@ -2,7 +2,7 @@
     <!-- {{ props.answerData }} -->
     <div class="questionWrap">
         <span class="asker">⩥ 來自 <span style="color: rgb(9, 88, 61);">{{ askerName }}</span> 在 {{ askTime
-        }} 回應 :</span>
+        }} :</span>
         <p class="askMsg">{{ askMsg }}</p>
     </div>
 </template>

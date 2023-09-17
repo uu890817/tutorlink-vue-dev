@@ -27,7 +27,7 @@
                     <n-icon>
                         <MdHelpCircle />
                     </n-icon>
-                    Q&A
+                    Q&A(製作中)
                 </n-button>
             </a>
             <a :href="correct" target="_blank">
@@ -35,7 +35,7 @@
                     <n-icon>
                         <MdCheckmarkCircleOutline />
                     </n-icon>
-                    批改試卷
+                    批改試卷(製作中)
                 </n-button>
             </a>
             <n-button strong secondary type="info" @click="shareExercise">
