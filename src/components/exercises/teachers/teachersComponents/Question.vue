@@ -6,9 +6,9 @@
                 }} :</span>
             </n-space>
             <n-space justify="end" v-if="isMyQuestion">
-                <n-button type="warning" @click="sendQuestion">
+                <!-- <n-button type="warning" @click="sendQuestion">
                     修改提問
-                </n-button>
+                </n-button> -->
 
                 <n-popconfirm positive-text="確認刪除" negative-text="取消">
                     <template #icon>
@@ -35,7 +35,7 @@
 
                 <div v-for="answer in props.questionData.answer">
                     <!-- {{ answer }} -->
-                    <Answer :answerData="answer"></Answer>
+                    <Answer :answerData="answer" @deleteAnswer="deleteAnswer"></Answer>
                     <hr style="margin-left: 25px;">
                 </div>
                 <template #header>
@@ -59,7 +59,7 @@
 </template>
     
 <script setup>
-import Answer from '@/components/exercises/students/studentsComponents/Answer.vue'
+import Answer from '@/components/exercises/teachers/teachersComponents/Answer.vue'
 import { ref, computed } from 'vue';
 import { MdHand as HandIcon } from '@vicons/ionicons4'
 import { useNotification } from 'naive-ui'
@@ -95,14 +95,17 @@ const sendAnswerData = ref({
 })
 
 
+const deleteAnswer = () => {
+    emits("sendAnswer")
 
+}
 
 
 const sendAnswer = async () => {
     sendAnswerData.value.createDate = new Date().getTime()
     console.log(sendAnswerData.value)
     if (sendAnswerData.value.content !== "") {
-        let resData = await tutorlink.post(`/student/addNewAnswer`, sendAnswerData.value)
+        let resData = await tutorlink.post(`/teacher/addNewAnswer`, sendAnswerData.value)
         console.log(resData.data.data)
         sendAnswerData.value = {
             question: {

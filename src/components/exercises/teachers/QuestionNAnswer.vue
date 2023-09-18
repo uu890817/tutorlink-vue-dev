@@ -13,13 +13,14 @@
     </n-button>
 
     <!-- <div class="ansWrap"> -->
-    <div class="queWrap" v-for="questionData in questionDatas">
-        <QA :questionData="questionData" @sendAnswer="sendAnswer"></QA>
+    <div v-if="showQA">
+        <div class="queWrap" v-for="questionData in questionDatas">
+            <QA :questionData="questionData" @sendAnswer="sendAnswer"></QA>
+        </div>
     </div>
-
     <!-- </div> -->
-    {{ epId }}
-    {{ questionDatas }}
+    <!-- {{ epId }}
+    {{ questionDatas }} -->
 </template>
 
 <script setup>
@@ -40,7 +41,11 @@ const epId = ref(route.params.id);
 
 
 
+const sendAnswer = () => {
+    showQA.value = false
+    getQuestion()
 
+}
 
 
 
@@ -59,6 +64,13 @@ getQuestion()
 </script>
 
 <style scoped>
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 .queWrap {
     margin: 10px 0;
     padding: 0 80px 0 50px;

@@ -6,9 +6,9 @@
                 }} 發問 :</span>
             </n-space>
             <n-space justify="end" v-if="isMyQuestion">
-                <n-button type="warning" @click="sendQuestion">
+                <!-- <n-button type="warning" @click="sendQuestion">
                     修改提問
-                </n-button>
+                </n-button> -->
 
                 <n-popconfirm positive-text="確認刪除" negative-text="取消">
                     <template #icon>
@@ -35,7 +35,7 @@
 
                 <div v-for="answer in props.questionData.answer">
                     <!-- {{ answer }} -->
-                    <Answer :answerData="answer"></Answer>
+                    <Answer :answerData="answer" @deleteAnswer="deleteAnswer"></Answer>
                     <hr style="margin-left: 25px;">
                 </div>
                 <template #header>
@@ -95,7 +95,9 @@ const sendAnswerData = ref({
 })
 
 
-
+const deleteAnswer = () => {
+    emits("sendAnswer")
+}
 
 
 const sendAnswer = async () => {
