@@ -7,7 +7,7 @@ export const useShoppingCartStore = defineStore('shoppingCart', () => {
     const shoppingCartItem = ref([]);
 
     const orderItem = ref([]);
- 
+
     const refundItem = ref([]);
 
     async function shoppingCartAjax(userId) {
@@ -160,6 +160,50 @@ export const useShoppingCartStore = defineStore('shoppingCart', () => {
             }
         }
     }
+
+    // 綠界傳入的值格式
+    // const ECpayObj = {
+    //     merchantTradeDate: "",      // 商店訂單日期
+    //     totalAmount: "",            // 交易總金額
+    //     tradeDesc: "",              // 交易描述
+    //     itemName: "",               // 訂單名稱
+    //     returnURL: "",              // 交易結果回傳網址
+    //     clientBackURL: "",          // 商店轉跳網址
+    //     needExtraPaidInfo: ""       // 是否需要額外付款資訊
+    // }
+
+    // 選擇綠界付款後轉址網頁的方法
+    // const result = await tutorlink.post('/ecpay', ECpayObj)
+    // const newPage = window.open('', '_blank');
+    // newPage.document.open();
+    // newPage.document.write(result.data);
+    // newPage.document.close();
+
+    // const line={
+    //     "amount" : shoppingCartItem.value.length,
+    //     "currency" : "TWD",
+    //     "orderId" : "MKSI_S_20180904_1000001",
+    //     "packages" : [
+    //         {
+    //             "id" : "1",
+    //             "amount": 100,
+    //             "products" : [
+    //                 {
+    //                     "id" : shoppingCartItem.value[i].id,
+    //                     "name" : shoppingCartItem.value[i].name,
+    //                     "imageUrl" : shoppingCartItem.value[i].img,
+    //                     "quantity" : shoppingCartItem.value[i].count,
+    //                     "price" : shoppingCartItem.value[i].price
+    //                 }
+    //             ]
+    //         }
+    //     ],
+    //     "redirectUrls" : {
+    //         "confirmUrl" : "https://pay-store.line.com/order/payment/authorize",
+    //         "cancelUrl" : "https://pay-store.line.com/order/payment/cancel"
+    //     }
+    // }
+
 
     const sendOrder = async (order) => {
         try {
