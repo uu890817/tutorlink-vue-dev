@@ -1,40 +1,44 @@
 <template>
   <div style="margin-bottom: 100px" class="question-list">
-    <h1 style="margin-bottom: 20px">問與答列表</h1>
+    <h4 style="margin-bottom: 20px">問與答列表</h4>
+    <!-- <select
+      v-model="selectedLessonId"
+      @change="filterByLesson(selectedLessonId)"
+    >
+      <option
+        v-for="lesson in videoclasses"
+        :key="lesson.lessonId"
+        :value="lesson.lessonId"
+      >
+        {{ lesson.lessonName }}
+      </option>
+    </select> -->
     <div v-for="videoclass in videoclasses" class="video">
       <div class="image-container" v-if="qaList.length > 0">
         <div class="image-wrapper">
-          <div class="content" style="padding-left: 30px">
+          <div class="content" style="padding-left: 30px; margin-bottom: 40px">
             <h5 style="font-weight: bolder">
               課程名稱:{{ videoclass.lessonName }}
             </h5>
             <h6>所有問答({{ videoclass.qaList.length }})</h6>
-            <div style="border: 1px solid #ccc; padding: 20px">
-              <ul class="qa-list">
-                <li v-for="(qaItem, index) in videoclass.qaList" :key="index">
+            <ul class="qa-list">
+              <li v-for="(qaItem, index) in videoclass.qaList" :key="index">
+                <div
+                  style="
+                    background-color: aliceblue;
+                    padding: 10px;
+                    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+                    margin: 20px 0;
+                  "
+                >
                   <h5>問題內容</h5>
                   <h6 class="qa-title">{{ qaItem.title }}</h6>
                   <p class="qa-content">{{ qaItem.question }}</p>
                   <p class="qa-time">提問時間:{{ formatDate(qaItem.time) }}</p>
                   <hr />
-                  <!-- <h5>您的回應</h5>
-                  <h6>
-                    {{ qaItem.answer }}
-                  </h6> -->
                   <h5 :class="{ 'text-danger': !qaItem.answer }">
                     {{ qaItem.answer ? qaItem.answer : "尚未回應" }}
                   </h5>
-                  <!-- <div class="qa-answer" v-else>
-                    <input
-                      type="text"
-                      v-model="qaItem.answer"
-                      class="qa-answer-input"
-                    />
-                    <button @click="Answer(qaItem.courseQAId, qaItem)">
-                      儲存回應
-                    </button>
-                  </div> -->
-
                   <button
                     class="btn btn-dark"
                     type="button"
@@ -68,10 +72,7 @@
                         <!-- 彈出視窗內容 -->
                         <div class="modal-body">
                           <ul class="qa-list">
-                            <li
-                              v-for="(qaItem, index) in videoclass.qaList"
-                              :key="index"
-                            >
+                            <li :key="index">
                               <h5>問題內容</h5>
                               <h6 class="qa-title">{{ qaItem.title }}</h6>
                               <p class="qa-content">{{ qaItem.question }}</p>
@@ -80,17 +81,15 @@
                               </p>
                               <hr />
                               <h5>您的回應</h5>
-                              <!-- <h6>
-                                {{ qaItem.answer }}
-                              </h6> -->
-
                               <input
                                 type="text"
-                                v-model="qaListUpdate.answer"
+                                v-model="qaItem.answer"
                                 class="qa-answer-input"
                               />
                               <button
-                                @click="Answer(qaItem.courseQAId, qaListUpdate)"
+                                @click="Answer(qaItem)"
+                                class="btn btn-dark"
+                                data-dismiss="modal"
                               >
                                 儲存回應
                               </button>
@@ -100,9 +99,9 @@
                       </div>
                     </div>
                   </div>
-                </li>
-              </ul>
-            </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -111,14 +110,11 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import tutorlink from "@/api/tutorlink.js";
-import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref } from "vue";
 
 const videoclasses = ref([]);
 const qaList = ref([]);
-const qaListUpdate = ref(qaList);
 
 const formatDate = (time) => {
   const date = new Date(time);
@@ -135,12 +131,12 @@ const getcourse = async () => {
     videoclasses.value = response.data;
 
     if (videoclasses.value.length > 0) {
-      // 使用Promise.all等待所有问题列表都获取完成
+      // 使用Promise.all等待所有問題列表都獲取完成
       await Promise.all(
         videoclasses.value.map(async (lesson) => {
           const lessonId = lesson.lessonId;
           console.log("lessonId:", lesson.lessonId);
-          // 获取课程问题列表
+          // 獲取課程問題列表
           const lessonQAList = await getLessonQA(lessonId);
           lesson.qaList = lessonQAList;
         })
@@ -159,19 +155,14 @@ const getLessonQA = async (lessonId) => {
   try {
     const response = await tutorlink.get(`/courseQA/${lessonId}`);
     console.log("課程QA列表", response.data);
-    // qaList.value.push(
-    //   ...response.data.map((qaItem) => ({
-    //     ...qaItem,
-    //     tempAnswer: qaItem.answer,
-    //   }))
-    // );
-    // 直接赋值给qaList.value
+
+    // 直接賦值给qaList.value
     qaList.value = response.data.map((qaItem) => ({
       ...qaItem,
       tempAnswer: qaItem.answer,
     }));
     if (qaList.value && qaList.value.length > 0) {
-      console.log("qaId:", qaList.value[0].courseQAId);
+      console.log("取得qaId:", qaList.value[0].courseQAId);
     } else {
       console.log("qaList is empty or undefined");
     }
@@ -182,33 +173,45 @@ const getLessonQA = async (lessonId) => {
     return [];
   }
 };
-// getLessonQA();
 
-const Answer = async (qaId, updatedQAData) => {
+const Answer = async (qaItem) => {
   try {
-    console.log(updatedQAData);
-    const response = await tutorlink.put(
-      `/courseQA/${qaId}`,
-      JSON.stringify(updatedQAData)
-    );
-    console.log("回答已更新", response.data);
+    const answer = qaItem.answer;
+    const qaId = qaItem.courseQAId;
+    const requestBody = {
+      answer: answer,
+    };
+    tutorlink.put(`/courseQA/${qaId}`, requestBody, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("回答已更新");
+    alert("回答已更新");
     // getcourse();
     // 更新qaList中对应的数据
-    const qaItemIndex = qaList.value.findIndex(
-      (item) => item.courseQAId === qaId
-    );
-    if (qaItemIndex !== -1) {
-      qaList.value[qaItemIndex].tempAnswer = updatedQAData.answer;
-    }
+    // const qaItemIndex = qaList.value.findIndex(
+    //   (item) => item.courseQAId === qaId
+    // );
+    // if (qaItemIndex !== -1) {
+    //   qaList.value[qaItemIndex].tempAnswer = updatedQAData.answer;
+    // }
   } catch (error) {
     console.error("新增回答時錯誤", error);
   }
 };
+
+const selectedLessonId = ref();
+const filterByLesson = async (selectedLessonId) => {
+  console.log("選擇的Id:", selectedLessonId);
+  await getLessonQA(selectedLessonId);
+  // getcourse(); // 刷新课程数据
+};
 </script>
 <style scoped>
-.qa-answer-input-container {
+/* .qa-answer-input-container {
   white-space: pre-wrap;
-}
+} */
 
 ul {
   list-style-type: none;
@@ -234,24 +237,24 @@ button:hover {
 .question-list {
   margin-bottom: 100px;
 }
-
+/* 
 .lesson-name {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-}
+} */
 
 .qa-list {
   list-style-type: none;
   padding: 0;
 }
 
-.qa-item {
+/* .qa-item {
   margin-bottom: 20px;
   border: 1px solid #ddd;
   padding: 10px;
   border-radius: 5px;
-}
+} */
 
 .qa-title {
   font-size: 16px;
@@ -270,14 +273,14 @@ button:hover {
   margin: 0;
 }
 
-.qa-answer {
+/* .qa-answer {
   display: flex;
   align-items: center;
 }
 
 .qa-answer p {
   margin: 0;
-}
+} */
 
 .qa-answer-input {
   flex-grow: 1;
@@ -287,7 +290,7 @@ button:hover {
   border-radius: 5px;
 }
 
-.qa-answer-button {
+/* .qa-answer-button {
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -299,5 +302,5 @@ button:hover {
 
 .qa-answer-button:hover {
   background-color: #0056b3;
-}
+} */
 </style>

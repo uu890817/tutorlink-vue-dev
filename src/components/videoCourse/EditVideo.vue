@@ -15,6 +15,9 @@
     >
   </div>
   <div class="page">
+    <router-link :to="{ name: 'editCourse', params: { lessonId: lessonId } }">
+      <button class="smbutton" style="width: 150px">編輯課程資訊</button>
+    </router-link>
     <h1 style="margin-top: 10px">課程表編輯</h1>
     <p>建立章節、講座，開始組合您的課程</p>
     <hr />
@@ -60,12 +63,17 @@
             </div>
             <h5 hidden>順序: {{ videoItem.sort }}</h5>
             <video
+              ref="videoPlayer"
               controls
               :src="videoItem.courseUrl"
               width="320"
               height="240"
             ></video>
-
+            <input
+              type="file"
+              id="video"
+              @change="handleFileupdate(videoItem, $event)"
+            />
             <hr />
           </div>
         </li>
@@ -80,6 +88,8 @@
 import { ref, onMounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import tutorlink from "@/api/tutorlink.js";
+import videojs from "video.js/dist/video.min";
+import "video.js/dist/video-js.min.css";
 
 const route = useRoute();
 const lessonId = ref(route.params.lessonId);
@@ -172,6 +182,7 @@ const confirmDeleteVideo = (videoId) => {
 const deleteVideo = async (videoId) => {
   tutorlink.delete(`/deleteVideo/${videoId}`);
   console.log("已刪除videoId:" + videoId);
+  await new Promise((resolve) => setTimeout(resolve, 300));
   getAllVideo();
 };
 
@@ -217,6 +228,29 @@ const uploadVideos = async () => {
   } catch (error) {
     // 處理錯誤
     console.error("上傳video時出錯", error);
+  }
+};
+
+const handleFileupdate = (videoItem, event) => {
+  try {
+    const videoId = videoItem.videoId;
+    const updatedFile = event.target.files[0];
+    const formData = new FormData();
+    formData.append("videoFile", updatedFile);
+
+    tutorlink.put(`/updateVideoFile/${videoId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    // 更新 videoItem.courseUrl
+    videoItem.courseUrl = URL.createObjectURL(updatedFile);
+
+    console.log(videoId, "影片檔案已更新");
+    alert("影片檔案已更新");
+  } catch (error) {
+    console.error("更新影片檔案時出錯", error);
   }
 };
 </script>
