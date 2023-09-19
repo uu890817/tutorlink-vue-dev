@@ -30,7 +30,6 @@
                     <n-space justify="end">
                         <div class="myChat">
                             <div class="myChatText">HIHI</div>
-                            <img src="https://picsum.photos/200/200" style="width: 40px; border-radius: 100%;">
                         </div>
                     </n-space>
 
@@ -38,14 +37,13 @@
                     <n-space>
                         <div class="otherChat">
                             <img src="https://picsum.photos/200/200" style="width: 40px; border-radius: 100%;">
-                            <div class="otherChatText">{{ key }}</div>
+                            <div class="otherChatText">{{ userId }}</div>
                         </div>
                     </n-space>
 
                     <n-space justify="end">
                         <div class="myChat">
                             <div class="myChatText"> {{ wsData.data }}</div>
-                            <img src="https://picsum.photos/200/200" style="width: 40px; border-radius: 100%;">
                         </div>
                     </n-space>
 
@@ -54,7 +52,7 @@
                 </n-scrollbar>
                 <div class="inputBox">
                     <n-input v-model:value="inputValue" type="textarea" autosize placeholder="請輸入..."
-                        @:keyup.enter="enter" />
+                        @:keyup.enter="onEnter" />
                 </div>
             </div>
         </div>
@@ -62,8 +60,29 @@
 </template>
 <script setup>
 import { onBeforeUnmount, ref } from 'vue'
+import tutorlink from '@/api/tutorlink.js'
+import { useChatRoomStore } from '@/stores/useChatRoomStore'
+import { storeToRefs } from 'pinia'
+
+const userIdStore = useChatRoomStore()
+const { getUserId } = userIdStore
+const { userId } = storeToRefs(userIdStore)
+
+
+
+const waitId = () => {
+    if (userId.value === "0") {
+        console.info("waiting..." + userId.value)
+        getUserId()
+        setTimeout(waitId(), 1000)
+    }
+    console.info("waiting..." + userId.value)
+}
+waitId()
+
+
+
 let mySocket = null
-const inputValue = ref('')
 const wsData = ref("")
 const key = ref("")
 const enter = (e) => {
@@ -71,13 +90,35 @@ const enter = (e) => {
     console.log(e)
 }
 
+const inputValue = ref('')
+const onEnter = (e) => {
+    if (e.key !== "Enter") {
+        return
+    }
+
+    if (e.shiftKey === true) {
+        // inputValue.value = inputValue.value + "\n"
+        console.log(1)
+        return
+    }
+    if (e.shiftKey === false) {
+        mySocket.send(`9<message>${inputValue.value}`)
+        inputValue.value = ""
+        console.log(2)
+
+        return
+    }
+}
 
 
-
-
+const getChatRoom = async () => {
+    let resData = await tutorlink.get('/ws/myRooms')
+    console.log(resData.data)
+}
+getChatRoom()
 
 if ('WebSocket' in window) {
-    let ms = new WebSocket('ws://localhost:8081/tutorlink/tSocket/1')
+    let ms = new WebSocket(`ws://localhost:8081/tutorlink/tSocket/${userId.value}`)
 
     ms.onopen = () => {
         wsData.value = "WS連結成功"
@@ -106,11 +147,7 @@ mySocket.onopen = () => {
     mySocket.send("Hello Server!")
 }
 
-onBeforeUnmount(async () => {
-    if (stompClient) {
-        await stompClient.disconnect()
-    }
-})
+// 
 </script>
 <style scoped>
 /* * {
@@ -195,6 +232,7 @@ onBeforeUnmount(async () => {
 
 .otherChat {
     display: block;
+    height: 50px;
 }
 
 .otherChatText {
@@ -208,6 +246,7 @@ onBeforeUnmount(async () => {
 
 .myChat {
     display: block;
+    height: 50px;
     right: 0;
 }
 
