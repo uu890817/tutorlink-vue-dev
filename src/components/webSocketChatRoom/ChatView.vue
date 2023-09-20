@@ -1,54 +1,57 @@
 <template >
-    <div class="chatNavBar">聊天室</div>
-    <div class="wrap">
-
+    <div class="chatNavBar">聊天室 ~~~ {{ sendTo.name }}</div>
+    <div class="wrap" v-if="userId !== -1">
 
         <div class="left">
             <div class="leftInner">
                 <n-scrollbar style="max-height: 470px">
-                    <div v-for="item in 20">
-                        <div class="userItem">
+                    <div v-for="item in chatRoom">
+                        <!-- {{ item }} -->
+                        <div class="userItem" @click="changeChatRoomTo(item.memberId, item.memberName)">
                             <img src="https://picsum.photos/200/200" style="width: 50px; border-radius: 100%;">
-                            <span style="margin: 0px 0 0 10px;vertical-align: middle; font-size: 20px;">謝老師{{ item }}</span>
+                            <span style="margin: 0px 0 0 10px;vertical-align: middle; font-size: 20px;">{{ item.name
+                            }}</span>
                         </div>
                     </div>
                 </n-scrollbar>
             </div>
         </div>
 
-        <div class="right">
+        <div class="right" v-if="sendTo.name !== null">
             <div class="rightInner">
-                <n-scrollbar style="max-height: 350px">
+                <n-scrollbar style="max-height: 350px" ref="msgScrollbarRef">
 
-                    <n-space>
-                        <div class="otherChat">
-                            <img src="https://picsum.photos/200/200" style="width: 40px; border-radius: 100%;">
-                            <div class="otherChatText">HIHI</div>
+
+                    <div v-for="msg in msgList">
+
+                        <div v-if="msg.isMine">
+                            <n-space justify="end">
+                                <div class="myChat">
+                                    <div class="myChatText">{{ msg.msg }}</div>
+                                </div>
+                            </n-space>
                         </div>
-                    </n-space>
+
+                        <div v-else>
+                            <n-space>
+                                <div class="otherChat">
+                                    <img src="https://picsum.photos/200/200" style="width: 40px; border-radius: 100%;">
+                                    <div class="otherChatText">{{ msg.msg }}</div>
+                                </div>
+                            </n-space>
+                        </div>
+
+                    </div>
+
 
                     <n-space justify="end">
-                        <div class="myChat">
-                            <div class="myChatText">HIHI</div>
-                        </div>
+                        <p>
+                        　　
+                        </p>
+                        <p>
+                        　　
+                        </p>
                     </n-space>
-
-
-                    <n-space>
-                        <div class="otherChat">
-                            <img src="https://picsum.photos/200/200" style="width: 40px; border-radius: 100%;">
-                            <div class="otherChatText">{{ userId }}</div>
-                        </div>
-                    </n-space>
-
-                    <n-space justify="end">
-                        <div class="myChat">
-                            <div class="myChatText"> {{ wsData.data }}</div>
-                        </div>
-                    </n-space>
-
-
-
                 </n-scrollbar>
                 <div class="inputBox">
                     <n-input v-model:value="inputValue" type="textarea" autosize placeholder="請輸入..."
@@ -56,103 +59,113 @@
                 </div>
             </div>
         </div>
+
+        <div class="choseChat" v-else>
+            選擇好友後開始聊天吧
+        </div>
+
+    </div>
+
+    <div class="pleaseLogin" v-else>
+        請先登入後再使用聊天室
     </div>
 </template>
 <script setup>
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue'
 import tutorlink from '@/api/tutorlink.js'
-import { useChatRoomStore } from '@/stores/useChatRoomStore'
+import { useWebSocketStore } from '@/stores/useWebSocketStore'
 import { storeToRefs } from 'pinia'
 
-const userIdStore = useChatRoomStore()
-const { getUserId } = userIdStore
-const { userId } = storeToRefs(userIdStore)
+const wsStore = useWebSocketStore()
+const { ws, wsStatus, userId, chatRoom, sendTo, otherMessage, msgList, wsTryOpen } = storeToRefs(wsStore)
+const { wsFactory, wsSend, sendWhere, useWSTryOpen } = wsStore
 
+wsFactory()
 
-
-const waitId = () => {
-    if (userId.value === "0") {
-        console.info("waiting..." + userId.value)
-        getUserId()
-        setTimeout(waitId(), 1000)
-    }
-    console.info("waiting..." + userId.value)
-}
-waitId()
-
-
-
-let mySocket = null
 const wsData = ref("")
 const key = ref("")
-const enter = (e) => {
-    key.value = e.key
-    console.log(e)
+const msgScrollbarRef = ref();
+
+
+
+const msgToBottom = () => {
+    msgScrollbarRef.value.scrollTo({
+        top: 210000000,
+        behavior: 'smooth',
+    });
 }
+
+
+
+
+
+const changeChatRoomTo = (id, name) => {
+    console.log("click")
+    sendWhere(id, name)
+}
+
 
 const inputValue = ref('')
 const onEnter = (e) => {
     if (e.key !== "Enter") {
         return
     }
-
     if (e.shiftKey === true) {
-        // inputValue.value = inputValue.value + "\n"
-        console.log(1)
         return
     }
     if (e.shiftKey === false) {
-        mySocket.send(`9<message>${inputValue.value}`)
+        wsSend(inputValue.value)
         inputValue.value = ""
-        console.log(2)
-
+        msgToBottom()
         return
     }
 }
 
 
-const getChatRoom = async () => {
-    let resData = await tutorlink.get('/ws/myRooms')
-    console.log(resData.data)
-}
-getChatRoom()
-
-if ('WebSocket' in window) {
-    let ms = new WebSocket(`ws://localhost:8081/tutorlink/tSocket/${userId.value}`)
-
-    ms.onopen = () => {
-        wsData.value = "WS連結成功"
-        console.log("WS連結成功");
 
 
-    }
-    ms.onmessage = (e) => {
-        wsData.value = e
-        console.log(e);
-    }
 
-    ms.onclose = () => {
-        wsData.value = "WS關閉"
-        console.log("WS關閉");
-    }
+onMounted(() => {
+    // msgToBottom()
+    watch(msgList, () => { msgToBottom() }, { deep: true })
+})
 
-    ms.onerror = (error) => {
-        console.log("錯誤: ")
-        console.log(error);
-    }
-    mySocket = ms
-}
 
-mySocket.onopen = () => {
-    mySocket.send("Hello Server!")
-}
 
-// 
+
+// watch(msgList, msgToBottom())?
 </script>
 <style scoped>
 /* * {
     height: 100%;
 } */
+.pleaseLogin {
+    /* div置中 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 垂直置中 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 24px;
+
+}
+
+.choseChat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 垂直置中 */
+    position: absolute;
+    top: 220px;
+    left: 50%;
+    /* transform: translate(-50%, -50%); */
+
+    font-size: 24px;
+}
 
 .chatNavBar {
     width: 100%;
@@ -197,7 +210,7 @@ mySocket.onopen = () => {
 .rightInner {
     padding: 10px;
     height: 470px;
-    background-color: rgb(255, 246, 246);
+    background-color: rgb(255, 250, 250);
     border-radius: 0 0 5px 0;
 
 }
@@ -236,7 +249,7 @@ mySocket.onopen = () => {
 }
 
 .otherChatText {
-    display: inline;
+    display: inline-block;
     vertical-align: middle;
     margin: 5px 0 0 10px;
     padding: 5px 10px 5px 10px;
@@ -252,7 +265,7 @@ mySocket.onopen = () => {
 
 .myChatText {
     vertical-align: middle;
-    display: inline;
+    display: inline-block;
     margin: 5px 10px 0 0;
     padding: 5px 10px 5px 10px;
     background-color: #ffe0f1;
