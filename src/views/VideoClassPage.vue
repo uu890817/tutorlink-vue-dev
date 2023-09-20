@@ -222,7 +222,10 @@
                   </button>
                   <p>{{ noteItem.noteContent }}</p>
                 </div>
-                <button @click="confirmDelNote(noteItem.videoNoteId)">
+                <button
+                  class="delButt"
+                  @click="confirmDelNote(noteItem.videoNoteId)"
+                >
                   刪除筆記
                 </button>
               </li>
@@ -262,7 +265,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import videojs from "video.js/dist/video.min";
 import "video.js/dist/video-js.min.css";
 import Navbar from "@/components/public/Navbar.vue";
@@ -299,6 +302,12 @@ const courseQAData = ref({
 });
 
 const QAList = ref([]);
+const noteData = ref({
+  timeLine: 0,
+  noteContent: "",
+});
+const noteList = ref([]);
+const lessonList = ref([]);
 
 const currentPlaybackTime = ref(0);
 const formattedPlaybackTime = computed(() => {
@@ -333,19 +342,13 @@ function initVideoSource() {
   });
 }
 
-const noteData = ref({
-  timeLine: 0,
-  noteContent: "",
-});
-const noteList = ref([]);
-const lessonList = ref([]);
-
 const jumpToTime = (timeLine) => {
   player.currentTime(timeLine);
   console.log("跳轉到時間戳");
 };
 
 const currentVideo = ref(videoList.value[currentVideoIndex.value]);
+// const currentVideoId = ref(currentVideo.value.videoId);
 
 const changeVideo = (index) => {
   console.log("跳轉到video", index);
@@ -371,6 +374,24 @@ const getPlaylistItemClasses = (index) => {
     disabled: index === currentVideoIndex.value,
   };
 };
+
+//讀取LocalStorage
+
+const savedData = localStorage.getItem("video_data");
+console.log("localStorage:", savedData);
+
+//將影片時間戳存入LocalStorage
+onBeforeUnmount(() => {
+  const videoId = currentVideo.value.videoId;
+  const userId = 1;
+  const dataToSave = {
+    videoId,
+    timestamp: Math.floor(player.currentTime()),
+    userId,
+  };
+  localStorage.setItem("video_data", JSON.stringify(dataToSave));
+  console.log(JSON.stringify(dataToSave));
+});
 
 //取得課程名稱
 const getCourse = async () => {
@@ -419,6 +440,7 @@ const getFirstVideo = async (videoId) => {
 
     console.log(videoUrl);
     player.src({ src: videoUrl, type: "video/mp4" });
+    currentVideo.value = videoList.value[currentVideoIndex.value];
     getVideoNote(videoId);
   } catch (error) {
     console.error("獲取影片出錯", error);
@@ -511,7 +533,8 @@ const addNote = async () => {
       { headers: { "Content-Type": "application/json;charset=UTF-8" } }
     );
     console.log("筆記新增成功", response.data);
-    getVideoNote();
+    noteData.value.noteContent = "";
+    getVideoNote(videoId);
   } catch (error) {
     console.error("新增筆記錯誤", error);
   }
@@ -527,9 +550,10 @@ const confirmDelNote = (videoNoteId) => {
 };
 const delNote = async (noteId) => {
   try {
+    const videoId = currentVideo.value.videoId;
     const response = await tutorlink.delete(`/videoNote/${noteId}`);
     console.log("刪除筆記成功");
-    getVideoNote();
+    getVideoNote(videoId);
   } catch (error) {
     console.error("刪除筆記時錯誤", error);
   }
@@ -766,5 +790,17 @@ ul {
   font-size: 12px;
   color: #777;
   margin: 0;
+}
+
+.delButt {
+  padding: 6px 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  /* width: 60%; */
+  margin: auto;
+  margin-bottom: 20px;
 }
 </style>

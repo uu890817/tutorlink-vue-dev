@@ -1,9 +1,9 @@
 <template>
   <Carousel v-bind="settings" :breakpoints="breakpoints">
-    <Slide v-for="slide in lessonList" :key="slide">
+    <Slide v-for="slide in onlineList" :key="slide">
       <RouterLink
         :to="{
-          name: slide.lessonType === true ? 'lessonInfo' : 'VideoCourse',
+          name: 'lessonInfo',
           params: { lessonId: slide.lessonId },
         }"
       >
@@ -39,8 +39,8 @@
                         <button type="button" class="btn btn-sm checkTeacher">看詳細>></button>
                     </RouterLink>
                 </div> -->
-        </div></RouterLink
-      >
+        </div>
+      </RouterLink>
     </Slide>
 
     <template #addons> </template>
@@ -62,14 +62,14 @@ import { useLessonsStore } from "../../stores/useLessonsStore.js";
 const favoriateListStore = useFavoriateListStore();
 const lessonsStore = useLessonsStore();
 const { favoriateListAjax } = favoriateListStore;
-const { lessonsAjax } = lessonsStore;
+const { lessonsTypeAjax } = lessonsStore;
 const { favoriateList } = storeToRefs(favoriateListStore);
-const { lessonList } = storeToRefs(lessonsStore);
+const { onlineList } = storeToRefs(lessonsStore);
 const str = "data:image/png;base64,";
 
 onMounted(async () => {
   getAllCookies();
-  lessonsAjax();
+  lessonsTypeAjax();
   favoriateListAjax(userID.value);
 });
 

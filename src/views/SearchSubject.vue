@@ -36,10 +36,12 @@
           <li class="list-group-item active listTitle" aria-current="true">
             類別
           </li>
-          <a
-            class="list-group-item list-group-item-action listContent"
-            @click="showAllCourses"
-            >全部課程</a
+          <router-link :to="{ name: 'search' }">
+            <a
+              class="list-group-item list-group-item-action listContent"
+              @click="showAllCourses"
+              >全部課程</a
+            ></router-link
           >
           <a
             class="list-group-item list-group-item-action listContent"
@@ -254,9 +256,13 @@ import { useFavoriateListStore } from "../stores/useFavoriateListStore.js";
 import { useLessonsStore } from "../stores/useLessonsStore.js";
 import { useShoppingCartStore } from "@/stores/useShoppingCartStore";
 import { useToolsStore } from "../stores/useToolsStore.js";
-
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+
 const userID = ref("");
+const route2 = useRoute();
+const subjectId = route2.params.subjectId;
+console.log(subjectId);
 
 const notification = useNotification();
 const cartStore = useShoppingCartStore();
@@ -324,13 +330,16 @@ const { lessonsAjax } = lessonsStore;
 const { select } = toolsStore;
 const { favoriateList } = storeToRefs(favoriateListStore);
 const { lessonList } = storeToRefs(lessonsStore);
+const { subjectLessonList } = storeToRefs(lessonsStore);
+const { lessonsSubjectAjax } = lessonsStore;
 
 onMounted(async () => {
-  await lessonsAjax();
+  await lessonsSubjectAjax(subjectId);
+  // await lessonsAjax();
   getAllCookies();
   favoriateListAjax(userID.value);
-  resultList.value = lessonList.value;
-  console.log(lessonList.value);
+  resultList.value = subjectLessonList.value;
+  console.log(subjectLessonList.value);
 });
 
 const currentTime = () => {
@@ -443,7 +452,7 @@ const resultList = ref([]);
 
 // 计算属性，过滤 lessonList 中的课程
 const filteredCourses = computed(() => {
-  return lessonList.value.filter((lesson) =>
+  return subjectLessonList.value.filter((lesson) =>
     lesson.lessonName.includes(searchKeyword.value)
   );
 });
