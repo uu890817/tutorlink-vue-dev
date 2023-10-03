@@ -124,7 +124,7 @@
           >
             <h4>「{{ KeywordQA }}」搜尋結果如下:</h4>
             <ul style="margin: 30px 0">
-              <li v-for="searchqa in searchQAResults" :key="qas">
+              <li v-for="searchqa in searchQAResults">
                 <h5 class="qa-title">{{ searchqa.title }}</h5>
                 <p class="qa-content">{{ searchqa.question }}</p>
                 <p class="qa-time">{{ formatDate(searchqa.time) }}</p>
@@ -268,11 +268,11 @@
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import videojs from "video.js/dist/video.min";
 import "video.js/dist/video-js.min.css";
-import Navbar from "@/components/public/Navbar.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import tutorlink from "@/api/tutorlink.js";
 
 const route = useRoute();
+
 const lessonDetailIdData = ref(route.params.id);
 // const lessonDetailIdData = ref(route.query.lessonDetail);
 // const lessonDetailIdData = ref(1);
@@ -382,16 +382,34 @@ console.log("localStorage:", savedData);
 
 //將影片時間戳存入LocalStorage
 onBeforeUnmount(() => {
-  const videoId = currentVideo.value.videoId;
-  const userId = 1;
-  const dataToSave = {
-    videoId,
-    timestamp: Math.floor(player.currentTime()),
-    userId,
-  };
-  localStorage.setItem("video_data", JSON.stringify(dataToSave));
-  console.log(JSON.stringify(dataToSave));
+  try {
+    const videoId = currentVideo.value.videoId;
+    console.log("videoId LS", videoId);
+    const dataToSave = {
+      videoId,
+      timestamp: Math.floor(player.currentTime()),
+      userId,
+    };
+    localStorage.setItem("video_data", JSON.stringify(dataToSave));
+    console.log(JSON.stringify(dataToSave));
+    // 在這裡執行清理或其他操作
+  } catch (error) {
+    console.error("Error during beforeUnmount:", error);
+  }
 });
+
+const userId = getCookie("UsersId");
+
+function getCookie(cookieName) {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+    if (name === cookieName) {
+      return value;
+    }
+  }
+  return null;
+}
 
 //取得課程名稱
 const getCourse = async () => {
@@ -635,6 +653,7 @@ const goBack = () => {
 body {
   margin: 0;
 }
+
 .timebut {
   border-radius: 15px;
   border: none;
@@ -685,6 +704,7 @@ li {
 
   transition: background-color 0.1s, color 0.1s;
 }
+
 ul {
   list-style-type: none;
 }
@@ -732,6 +752,7 @@ ul {
   height: 50px;
   padding: 20px;
 }
+
 .addQA input {
   width: 100%;
   height: 40px;
@@ -775,6 +796,7 @@ ul {
   margin: 0 20px;
   padding-left: 30px;
 }
+
 .qa-title {
   font-size: 16px;
   font-weight: bold;

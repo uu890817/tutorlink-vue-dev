@@ -7,7 +7,7 @@
         </div>
         <div class="row g-0 align-items-center">
             <div class="cartImgStyle col-md-4">
-                <img :src="list.lessonUrl" class="card-img-top cardImg img-fluid" alt="...">
+                <img :src="str + list.lessonUrl" class="card-img-top cardImg img-fluid" alt="...">
             </div>
             <div class="col-md-8">
                 <div class=" card-body text-start">
@@ -32,6 +32,8 @@ import tutorlink from '../../api/tutorlink'
 import { useFavoriateListStore } from '../../stores/useFavoriateListStore.js'
 import { storeToRefs } from 'pinia'
 const userID = ref("");
+const str = ref('data:imagae/png;base64,');
+
 
 // pinia
 const favoriateListStore = useFavoriateListStore()
@@ -101,8 +103,14 @@ const getAllCookies = () => {
     overflow: hidden;
 }
 
+.cartImgStyle {
+    width: 220px;
+    height: 150px;
+}
+
 .cardImg {
-    object-position: center center;
+    object-fit: cover;
+    object-position: center;
     max-width: 100%;
     max-height: 100%;
     transition: .3s;

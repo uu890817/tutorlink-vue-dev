@@ -47,10 +47,9 @@
 
 import { onMounted, ref, watch } from 'vue';
 import tutorlink from '@/api/tutorlink.js';
-import { useRoute } from 'vue-router'
+
 import priceButton from './LessonPriceButton.vue';
-const route = useRoute()
-const testLessonId = ref(2)
+
 //取得課程ID
 const props = defineProps({
     lessonId: {
@@ -70,7 +69,7 @@ tutorlink.get(`/findLessonDetailByLessonId?lessonId=${props.lessonId}`).then((re
 //取得課程資料
 const lessons = ref([])
 const subjectId = ref()
-const price = ref('')
+const price = ref(0)
 tutorlink.post(`/findLessons/${props.lessonId}`).then((response) => {
     lessons.value = response.data
     console.log(lessons);
